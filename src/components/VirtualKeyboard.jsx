@@ -1,4 +1,5 @@
 import React from 'react';
+import { cardArray, F } from '../data/cardData';
 
 function VirtualKeyboard({ onButtonClick, currentQuery }) {
   // Determine what stage of input we're in
@@ -31,6 +32,54 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
     { key: '3', display: '3' },
     { key: '2', display: '2' }
   ];
+
+  // Function to check if a card combination will result in a fold
+  const willFold = (card) => {
+    if (!showFirstCard && !showSecondCard) return false;
+    
+    // If we're selecting the first card, we can't determine yet
+    if (showFirstCard) return false;
+    
+    // If we're selecting the second card
+    if (showSecondCard) {
+      const position = currentQuery[0];
+      const firstCard = currentQuery[1];
+      const secondCard = card;
+      
+      // Check both suited and unsuited combinations
+      const suitedCombo = `${firstCard}${secondCard}s`;
+      const unsuitedCombo = `${firstCard}${secondCard}`;
+      
+      // Find the index for the position
+      let posIndex;
+      switch (position) {
+        case 'E': posIndex = 3; break;
+        case 'M': posIndex = 1; break;
+        case 'L': posIndex = 5; break;
+        case 'S': posIndex = 7; break;
+        case 'B': posIndex = 9; break;
+        default: return true; // Default to fold if position is invalid
+      }
+      
+      // Check if the card is in the array and if both unraised and raised pots result in fold
+      for (let i = 0; i < cardArray.length; i++) {
+        // Check suited version
+        if (cardArray[i][0] === suitedCombo) {
+          return cardArray[i][posIndex] === F && cardArray[i][posIndex + 1] === F;
+        }
+        
+        // Check unsuited version
+        if (cardArray[i][0] === unsuitedCombo) {
+          return cardArray[i][posIndex] === F && cardArray[i][posIndex + 1] === F;
+        }
+      }
+      
+      // If we can't find the combination, it's a fold
+      return true;
+    }
+    
+    return false;
+  };
 
   // Clear button handler
   const handleClear = () => {
@@ -94,15 +143,24 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
           <div className="button-group">
             <div className="group-label">Second Card</div>
             <div className="buttons">
-              {cardRanks.map(card => (
-                <button 
-                  key={card.key} 
-                  className="keyboard-button card-button"
-                  onClick={() => onButtonClick(currentQuery + card.key)}
-                >
-                  {card.display}
-                </button>
-              ))}
+              {cardRanks.map(card => {
+                const isFold = willFold(card.key);
+                return (
+                  <button 
+                    key={card.key} 
+                    className={`keyboard-button card-button ${isFold ? 'fold-card' : ''}`}
+                    onClick={() => onButtonClick(currentQuery + card.key)}
+                    style={isFold ? {
+                      backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                      color: '#e74c3c',
+                      borderColor: '#e74c3c'
+                    } : {}}
+                  >
+                    {card.display}
+                    {isFold && <span className="fold-indicator">FOLD</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

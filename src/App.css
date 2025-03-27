@@ -565,3 +565,32 @@ body {
     font-size: 1.5rem;
   }
 }
+
+/* Fold indicator styling */
+.fold-card {
+  position: relative;
+  overflow: visible !important;
+}
+
+.fold-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  transform: rotate(0deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 576px) {
+  .fold-indicator {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+    top: -6px;
+    right: -6px;
+  }
+}
