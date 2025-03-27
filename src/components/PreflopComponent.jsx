@@ -34,6 +34,14 @@ function PreflopComponent() {
     }
   }, [query]);
 
+  useEffect(() => {
+    // Auto-enable table mode on mobile
+    const isMobile = window.innerWidth <= 576;
+    if (isMobile) {
+      setTableMode(true);
+    }
+  }, []);
+
   const handleKeyboardInput = (newQuery, replace = false) => {
     if (replace) {
       setQuery(newQuery);
@@ -136,20 +144,23 @@ function PreflopComponent() {
         </div>
       </div>
       
-      <div className="view-mode-toggle">
-        <button 
-          className={`view-mode-button ${!tableMode ? 'active' : ''}`}
-          onClick={toggleTableMode}
-        >
-          Full View
-        </button>
-        <button 
-          className={`view-mode-button ${tableMode ? 'active' : ''}`}
-          onClick={toggleTableMode}
-        >
-          Table Mode
-        </button>
-      </div>
+      {/* Only show toggle on larger screens */}
+      {window.innerWidth > 576 && (
+        <div className="view-mode-toggle">
+          <button 
+            className={`view-mode-button ${!tableMode ? 'active' : ''}`}
+            onClick={toggleTableMode}
+          >
+            Full View
+          </button>
+          <button 
+            className={`view-mode-button ${tableMode ? 'active' : ''}`}
+            onClick={toggleTableMode}
+          >
+            Table Mode
+          </button>
+        </div>
+      )}
       
       <VirtualKeyboard 
         onButtonClick={handleKeyboardInput} 
@@ -227,6 +238,13 @@ function PreflopComponent() {
                       className={`swipe-indicator ${index === currentItemIndex ? 'active' : ''}`}
                     />
                   ))}
+                </div>
+              )}
+              
+              {/* Swipe instructions */}
+              {filteredItems.length > 1 && (
+                <div className="swipe-instructions">
+                  Swipe left/right to navigate
                 </div>
               )}
             </>

@@ -1,3 +1,28 @@
+/* Root element fixes to prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f5f5f5;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -365,47 +390,60 @@ body {
 .control-buttons {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
   margin-top: 15px;
+  gap: 10px;
 }
 
 .control-button {
   flex: 1;
   padding: 12px;
-}
-
-.clear-button {
-  background-color: #ff6b6b;
-  color: white;
-}
-
-.backspace-button {
-  background-color: #ffa94d;
-  color: white;
-}
-
-.keyboard-button:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-}
-
-.keyboard-button:active {
-  transform: translateY(0);
-}
-
-.toggle-keyboard-button {
-  padding: 10px 15px;
-  background-color: #4169E1;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  font-size: 1.1rem;
   font-weight: bold;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.toggle-keyboard-button:hover {
-  background-color: #3050b0;
+.clear-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.back-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile optimizations for control buttons */
+@media (max-width: 576px) {
+  .control-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    margin: 0;
+  }
+  
+  .control-button {
+    padding: 15px;
+    font-size: 1.2rem;
+    min-height: 60px;
+  }
+  
+  /* Add padding to the bottom of the page to account for fixed buttons */
+  .page {
+    padding-bottom: 80px;
+  }
 }
 
 /* Responsive adjustments for mobile */
@@ -524,18 +562,176 @@ body {
 
 /* Mobile optimizations */
 @media (max-width: 576px) {
-  .advice {
-    font-size: 1.4rem;
+  .page {
+    margin: 0;
+    padding: 10px;
+    box-shadow: none;
+    width: 100%;
   }
   
-  .card {
+  .head {
+    padding: 10px 0;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+  }
+  
+  .sub-head {
+    font-size: 1.2rem;
+  }
+  
+  .view-mode-toggle {
+    margin: 10px 0;
+  }
+  
+  .view-mode-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  /* Keyboard optimizations */
+  .virtual-keyboard {
+    margin: 10px 0;
+  }
+  
+  .current-query {
+    font-size: 1.3rem;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+  }
+  
+  .button-group {
+    margin-bottom: 15px;
+  }
+  
+  .group-label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .buttons {
+    gap: 8px;
+  }
+  
+  .keyboard-button {
+    min-width: 50px;
+    height: 60px;
+    font-size: 1.2rem;
+    padding: 5px;
+  }
+  
+  .card-button {
+    min-width: 60px;
+    height: 70px;
+  }
+  
+  /* Indicator styles */
+  .premium-indicator,
+  .strong-indicator,
+  .playable-indicator,
+  .marginal-indicator,
+  .weak-indicator,
+  .fold-indicator {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+    margin-top: 3px;
+    display: block;
+    border-radius: 3px;
+    text-align: center;
+  }
+  
+  .premium-indicator {
+    background-color: rgba(46, 204, 113, 0.8);
+    color: white;
+  }
+  
+  .strong-indicator {
+    background-color: rgba(39, 174, 96, 0.8);
+    color: white;
+  }
+  
+  .playable-indicator {
+    background-color: rgba(52, 152, 219, 0.8);
+    color: white;
+  }
+  
+  .marginal-indicator {
+    background-color: rgba(241, 196, 15, 0.8);
+    color: #333;
+  }
+  
+  .weak-indicator {
+    background-color: rgba(230, 126, 34, 0.8);
+    color: white;
+  }
+  
+  .fold-indicator {
+    background-color: rgba(231, 76, 60, 0.8);
+    color: white;
+  }
+  
+  /* Table mode specific */
+  .table-mode .card {
     width: 35px;
     height: 70px;
   }
   
-  .situation-row {
-    padding: 10px;
+  .table-mode .advice {
+    font-size: 1.3rem;
   }
+  
+  /* Swipe indicators */
+  .swipe-indicators {
+    margin: 10px 0;
+  }
+  
+  .swipe-indicator {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Landscape orientation optimizations */
+@media (max-width: 812px) and (orientation: landscape) {
+  .page {
+    padding-bottom: 10px;
+  }
+  
+  .buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .keyboard-button {
+    min-width: 45px;
+    height: 50px;
+    font-size: 1.1rem;
+  }
+  
+  .card-button {
+    min-width: 50px;
+    height: 60px;
+  }
+  
+  .table-mode .situation-row {
+    flex-direction: row;
+  }
+  
+  .table-mode .card {
+    width: 30px;
+    height: 60px;
+  }
+}
+
+/* Add haptic feedback visual cue */
+.keyboard-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s;
 }
 
 /* View mode toggle styles */
@@ -860,5 +1056,231 @@ body {
   
   .legend-label {
     font-size: 0.7rem;
+  }
+}
+
+/* Swipe instructions */
+.swipe-instructions {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 10px 0 20px;
+  padding: 8px;
+  background-color: rgba(236, 240, 241, 0.5);
+  border-radius: 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Card display optimizations */
+.situation-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table-mode .situation-row {
+  padding: 10px;
+}
+
+/* Card container */
+.col-xs-12.col-sm-4 {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* Action styling */
+.action-raise {
+  color: #27ae60;
+  font-weight: bold;
+  background-color: rgba(46, 204, 113, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.action-reraise {
+  color: #16a085;
+  font-weight: bold;
+  background-color: rgba(22, 160, 133, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.action-call {
+  color: #3498db;
+  font-weight: bold;
+  background-color: rgba(52, 152, 219, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.action-check {
+  color: #f39c12;
+  font-weight: bold;
+  background-color: rgba(243, 156, 18, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.action-fold {
+  color: #e74c3c;
+  font-weight: bold;
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Enhanced mobile optimizations */
+@media (max-width: 576px) {
+  /* Hide stack size guide on mobile */
+  .stack-size-guide {
+    display: none;
+  }
+  
+  /* Make cards more visible */
+  .card {
+    margin: 0 1px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  /* Improve advice readability */
+  .advice p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  
+  /* Make swipe indicators more visible */
+  .swipe-indicator {
+    width: 10px;
+    height: 10px;
+    margin: 0 6px;
+  }
+  
+  .swipe-indicator.active {
+    width: 12px;
+    height: 12px;
+  }
+  
+  /* Add pull-to-refresh hint */
+  .situations-container {
+    position: relative;
+  }
+  
+  .situations-container::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 5px;
+    background-color: #ddd;
+    border-radius: 5px;
+    opacity: 0.7;
+  }
+  
+  /* Optimize for iPhone notch */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    .page {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+    }
+    
+    .control-buttons {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}
+
+/* Enhanced mobile optimizations */
+@media (max-width: 576px) {
+  .page {
+    margin: 0;
+    padding: 10px;
+    box-shadow: none;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .col-xs-12 {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Center content */
+  .head {
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  /* Fix virtual keyboard width */
+  .virtual-keyboard {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 5px;
+  }
+  
+  .buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix situation container */
+  .situations-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 5px;
+  }
+  
+  .situation-row {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  /* Fix card display */
+  .card {
+    max-width: 20%;
+    height: auto;
+    object-fit: contain;
   }
 }

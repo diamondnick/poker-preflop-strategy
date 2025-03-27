@@ -191,15 +191,15 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
     
     switch (strength) {
       case handStrengthCategories.PREMIUM:
-        return <span className="premium-indicator">RAISE</span>;
+        return <span className="premium-indicator">RAISE/RERAISE ★</span>;
       case handStrengthCategories.STRONG:
         return <span className="strong-indicator">RAISE</span>;
       case handStrengthCategories.PLAYABLE:
-        return <span className="playable-indicator">PLAY</span>;
+        return <span className="playable-indicator">CALL/RAISE</span>;
       case handStrengthCategories.MARGINAL:
-        return <span className="marginal-indicator">CAUTION</span>;
+        return <span className="marginal-indicator">CALL</span>;
       case handStrengthCategories.WEAK:
-        return <span className="weak-indicator">WEAK</span>;
+        return <span className="weak-indicator">CHECK/FOLD</span>;
       case handStrengthCategories.FOLD:
         return <span className="fold-indicator">FOLD</span>;
       default:
@@ -212,8 +212,8 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
     onButtonClick('', true);
   };
 
-  // Backspace button handler
-  const handleBackspace = () => {
+  // Back button handler
+  const handleBack = () => {
     if (currentQuery.length > 0) {
       onButtonClick(currentQuery.slice(0, -1), true);
     }
@@ -247,15 +247,15 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
         )}
         
         {/* First card buttons */}
-        {(showFirstCard || showPositions) && (
+        {showFirstCard && (
           <div className="button-group">
-            <div className="group-label">{showFirstCard ? 'First Card' : 'Cards'}</div>
+            <div className="group-label">First Card</div>
             <div className="buttons">
               {cardRanks.map(card => (
                 <button 
                   key={card.key} 
                   className="keyboard-button card-button"
-                  onClick={() => onButtonClick(showFirstCard ? currentQuery + card.key : card.key)}
+                  onClick={() => onButtonClick(currentQuery + card.key)}
                 >
                   {card.display}
                 </button>
@@ -289,50 +289,18 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
         )}
       </div>
       
-      {/* Hand strength legend (only show when selecting second card) */}
-      {showSecondCard && (
-        <div className="hand-strength-legend">
-          <div className="legend-title">Hand Strength</div>
-          <div className="legend-items">
-            <div className="legend-item premium-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Premium</div>
-            </div>
-            <div className="legend-item strong-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Strong</div>
-            </div>
-            <div className="legend-item playable-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Playable</div>
-            </div>
-            <div className="legend-item marginal-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Marginal</div>
-            </div>
-            <div className="legend-item weak-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Weak</div>
-            </div>
-            <div className="legend-item fold-legend">
-              <div className="legend-color"></div>
-              <div className="legend-label">Fold</div>
-            </div>
-          </div>
-        </div>
-      )}
-      
       {/* Control buttons */}
       <div className="control-buttons">
         <button 
-          className="keyboard-button control-button clear-button"
+          className="control-button clear-button" 
           onClick={handleClear}
         >
           Clear
         </button>
         <button 
-          className="keyboard-button control-button backspace-button"
-          onClick={handleBackspace}
+          className="control-button back-button" 
+          onClick={handleBack}
+          disabled={currentQuery.length === 0}
         >
           ← Back
         </button>
