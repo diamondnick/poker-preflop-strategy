@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import './fullscreen.css';
 import PreflopComponent from './components/PreflopComponent';
+import { Helmet } from 'react-helmet';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -89,6 +90,12 @@ function App() {
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
+      <Helmet>
+        <meta name="description" content="PokerEdge - Your mobile poker strategy companion" />
+        <meta name="apple-mobile-web-app-title" content="PokerEdge" />
+        <meta name="application-name" content="PokerEdge" />
+      </Helmet>
+      
       <button 
         className="dark-mode-toggle" 
         onClick={toggleDarkMode}
