@@ -232,7 +232,41 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
     <div className={`virtual-keyboard ${darkMode ? 'dark-mode' : ''}`}>
       {/* Display current query */}
       <div className="current-query">
-        {currentQuery ? currentQuery : 'Select cards'}
+        {currentQuery ? (
+          <div className="selected-cards">
+            {currentQuery.length >= 1 && currentQuery[0] && (
+              <div className="position-display">{currentQuery[0]}</div>
+            )}
+            {currentQuery.length >= 2 && currentQuery[1] && (
+              <div 
+                className={`selected-card ${['A', 'K', 'Q', 'J', 'T'].includes(currentQuery[1]) ? 'red-card' : 'black-card'}`}
+                data-card={currentQuery[1]}
+              >
+                <span className="card-corner top-left">{currentQuery[1]}</span>
+                <span className="card-center">{currentQuery[1]}</span>
+                <span className="card-corner bottom-right">{currentQuery[1]}</span>
+              </div>
+            )}
+            {currentQuery.length >= 3 && currentQuery[2] && (
+              <>
+                {currentQuery[2] === 's' || currentQuery[2] === 'o' ? (
+                  <div className="card-connector">{currentQuery[2] === 's' ? 'suited' : 'offsuit'}</div>
+                ) : (
+                  <div 
+                    className={`selected-card ${['A', 'K', 'Q', 'J', 'T'].includes(currentQuery[2]) ? 'red-card' : 'black-card'}`}
+                    data-card={currentQuery[2]}
+                  >
+                    <span className="card-corner top-left">{currentQuery[2]}</span>
+                    <span className="card-center">{currentQuery[2]}</span>
+                    <span className="card-corner bottom-right">{currentQuery[2]}</span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        ) : (
+          'Select cards'
+        )}
       </div>
       
       {/* Button groups */}

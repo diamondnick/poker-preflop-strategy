@@ -2157,3 +2157,99 @@ body {
     padding: 1px 0;
   }
 }
+
+/* Selected cards display */
+.selected-cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.position-display {
+  background-color: var(--header);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.selected-card {
+  position: relative;
+  width: 60px;
+  height: 80px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.red-card {
+  color: #d40000;
+}
+
+.black-card {
+  color: #000;
+}
+
+.card-corner {
+  position: absolute;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.top-left {
+  top: 4px;
+  left: 6px;
+}
+
+.bottom-right {
+  bottom: 4px;
+  right: 6px;
+  transform: rotate(180deg);
+}
+
+.card-connector {
+  font-size: 0.9em;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* Dark mode selected cards */
+.dark-mode .selected-card {
+  background-color: #f0f0f0;
+  border-color: #666;
+}
+
+/* Mobile optimizations for selected cards */
+@media (max-width: 576px) {
+  .current-query {
+    padding: 15px 10px;
+  }
+  
+  .selected-cards {
+    flex-wrap: wrap;
+  }
+  
+  .selected-card {
+    width: 50px;
+    height: 70px;
+  }
+  
+  .card-corner {
+    font-size: 0.8em;
+  }
+  
+  .top-left {
+    top: 3px;
+    left: 5px;
+  }
+  
+  .bottom-right {
+    bottom: 3px;
+    right: 5px;
+  }
+}
