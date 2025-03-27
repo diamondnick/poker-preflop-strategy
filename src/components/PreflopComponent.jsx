@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SituationService } from '../models/SituationService';
 import StackSizeGuide from './StackSizeGuide';
+import VirtualKeyboard from './VirtualKeyboard';
 
 const cardService = new SituationService();
 
@@ -25,8 +26,15 @@ function PreflopComponent() {
     }
   }, [query]);
 
-  const handleQueryChange = (e) => {
-    setQuery(e.target.value);
+  const handleKeyboardInput = (newQuery, replace = false) => {
+    if (replace) {
+      setQuery(newQuery);
+    } else {
+      // Only allow up to 3 characters
+      if (query.length < 3) {
+        setQuery(newQuery);
+      }
+    }
   };
 
   // Function to get the correct image path
@@ -45,17 +53,10 @@ function PreflopComponent() {
         </div>
       </div>
       
-      <div className="search-container">
-        <input 
-          id="hand" 
-          placeholder="usage: 'et9'" 
-          value={query}
-          onChange={handleQueryChange}
-          maxLength="3" 
-          type="text" 
-          style={{ marginBottom: '10px' }} 
-        />
-      </div>
+      <VirtualKeyboard 
+        onButtonClick={handleKeyboardInput} 
+        currentQuery={query} 
+      />
 
       <div className="situations-container">
         {(filteredItems.length > 0 ? filteredItems : []).slice(0, 20).map((item, index) => (
