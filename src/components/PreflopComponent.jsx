@@ -102,16 +102,35 @@ function PreflopComponent() {
   const colorCodeAction = (action) => {
     if (!action) return action;
     
+    console.log('Action value:', action, 'Type:', typeof action);
+    
+    // Handle the exact 'F' value from cardData.js
+    if (action === 'F' || action === 'Fold') {
+      console.log('FOLD match found!');
+      return <span className="action-fold" style={{
+        color: '#e74c3c',
+        fontWeight: 'bold',
+        fontSize: '1.2em',
+        letterSpacing: '1px',
+        textTransform: 'uppercase',
+        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+        padding: '2px 8px',
+        borderRadius: '4px',
+        display: 'inline-block'
+      }}>FOLD</span>;
+    }
+    
     const lowerAction = action.toLowerCase();
     
-    if (lowerAction.includes('raise')) {
+    // For other actions that include "fold"
+    if (lowerAction.includes('fold')) {
+      return <span className="action-fold">{action}</span>;
+    } else if (lowerAction.includes('raise')) {
       return <span className="action-raise">{action}</span>;
     } else if (lowerAction.includes('reraise')) {
       return <span className="action-reraise">{action}</span>;
     } else if (lowerAction.includes('call')) {
       return <span className="action-call">{action}</span>;
-    } else if (lowerAction.includes('fold')) {
-      return <span className="action-fold">{action}</span>;
     } else if (lowerAction.includes('check')) {
       return <span className="action-check">{action}</span>;
     }
@@ -178,8 +197,36 @@ function PreflopComponent() {
 
                 <div className="col-xs-12 advice-column">
                   <div className="advice">
-                    <p>If pot is <b>un-raised</b>: {colorCodeAction(filteredItems[currentItemIndex].unraisedPot)}</p>
-                    <p>If pot is <b>raised</b>: {colorCodeAction(filteredItems[currentItemIndex].raisedPot)}</p>
+                    <p>If pot is <b>un-raised</b>: {
+                      filteredItems[currentItemIndex].unraisedPot === 'F' ? 
+                        <span style={{
+                          color: '#e74c3c',
+                          fontWeight: 'bold',
+                          fontSize: '1.2em',
+                          letterSpacing: '1px',
+                          textTransform: 'uppercase',
+                          backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          display: 'inline-block'
+                        }}>FOLD</span> : 
+                        colorCodeAction(filteredItems[currentItemIndex].unraisedPot)
+                    }</p>
+                    <p>If pot is <b>raised</b>: {
+                      filteredItems[currentItemIndex].raisedPot === 'F' ? 
+                        <span style={{
+                          color: '#e74c3c',
+                          fontWeight: 'bold',
+                          fontSize: '1.2em',
+                          letterSpacing: '1px',
+                          textTransform: 'uppercase',
+                          backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          display: 'inline-block'
+                        }}>FOLD</span> : 
+                        colorCodeAction(filteredItems[currentItemIndex].raisedPot)
+                    }</p>
                   </div>
                 </div>
               </div>
@@ -202,8 +249,18 @@ function PreflopComponent() {
               <div className="situation-row">
                 <div className="col-xs-12 advice-column">
                   <div className="advice">
-                    <p>No results found for "<b>{query}</b>"</p>
-                    <p>Try a different hand or position</p>
+                    <span style={{
+                      color: '#e74c3c',
+                      fontWeight: 'bold',
+                      fontSize: '1.5em',
+                      letterSpacing: '2px',
+                      textTransform: 'uppercase',
+                      backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                      padding: '10px 20px',
+                      borderRadius: '4px',
+                      display: 'inline-block',
+                      margin: '20px 0'
+                    }}>FOLD</span>
                   </div>
                 </div>
               </div>
@@ -219,7 +276,7 @@ function PreflopComponent() {
           )
         ) : (
           // Normal mode - show list of items
-          (filteredItems.length > 0 ? filteredItems : []).slice(0, 20).map((item, index) => (
+          filteredItems.length > 0 ? filteredItems.slice(0, 20).map((item, index) => (
             <div key={index} className="row situation-row">
               <div className="col-xs-12 col-sm-4">
                 <img className="card" src={`/images/svg-cards/${item.position}.svg`} alt={item.positionDisplay} />
@@ -238,12 +295,59 @@ function PreflopComponent() {
 
               <div className="col-xs-12 col-sm-4 advice-column">
                 <div className="advice">
-                  <p>If pot is <b>un-raised</b>: {colorCodeAction(item.unraisedPot)}</p>
-                  <p>If pot is <b>raised</b>: {colorCodeAction(item.raisedPot)}</p>
+                  <p>If pot is <b>un-raised</b>: {
+                    item.unraisedPot === 'F' ? 
+                      <span style={{
+                        color: '#e74c3c',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        display: 'inline-block'
+                      }}>FOLD</span> : 
+                      colorCodeAction(item.unraisedPot)
+                  }</p>
+                  <p>If pot is <b>raised</b>: {
+                    item.raisedPot === 'F' ? 
+                      <span style={{
+                        color: '#e74c3c',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        display: 'inline-block'
+                      }}>FOLD</span> : 
+                      colorCodeAction(item.raisedPot)
+                  }</p>
                 </div>
               </div>
             </div>
-          ))
+          )) : query ? (
+            <div className="row situation-row">
+              <div className="col-xs-12 advice-column">
+                <div className="advice">
+                  <span style={{
+                    color: '#e74c3c',
+                    fontWeight: 'bold',
+                    fontSize: '1.5em',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    padding: '10px 20px',
+                    borderRadius: '4px',
+                    display: 'inline-block',
+                    margin: '20px 0'
+                  }}>FOLD</span>
+                </div>
+              </div>
+            </div>
+          ) : null
         )}
       </div>
       
