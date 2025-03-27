@@ -183,25 +183,34 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
     }
   };
 
-  // Function to get indicator label based on hand strength
+  // Function to get indicator label for a card
   const getIndicatorLabel = (card) => {
+    if (!showSecondCard) return null;
+    
+    const firstCard = currentQuery[1];
+    const secondCard = card;
+    const suited = currentQuery[2] === 's';
+    const pair = firstCard === secondCard;
+    
+    // Get the hand strength
     const strength = getHandStrength(card);
     
     if (!strength) return null;
     
+    // Return appropriate indicator based on strength
     switch (strength) {
       case handStrengthCategories.PREMIUM:
-        return <span className="premium-indicator">RAISE/RERAISE ★</span>;
+        return <div className="card-indicator premium-indicator">RAISE</div>;
       case handStrengthCategories.STRONG:
-        return <span className="strong-indicator">RAISE</span>;
+        return <div className="card-indicator strong-indicator">RAISE</div>;
       case handStrengthCategories.PLAYABLE:
-        return <span className="playable-indicator">CALL/RAISE</span>;
+        return <div className="card-indicator playable-indicator">CALL</div>;
       case handStrengthCategories.MARGINAL:
-        return <span className="marginal-indicator">CALL</span>;
+        return <div className="card-indicator marginal-indicator">CALL/CHECK</div>;
       case handStrengthCategories.WEAK:
-        return <span className="weak-indicator">CHECK/FOLD</span>;
+        return <div className="card-indicator weak-indicator">CHECK/FOLD</div>;
       case handStrengthCategories.FOLD:
-        return <span className="fold-indicator">FOLD</span>;
+        return <div className="card-indicator fold-indicator">FOLD</div>;
       default:
         return null;
     }
@@ -256,8 +265,9 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
                   key={card.key} 
                   className="keyboard-button card-button"
                   onClick={() => onButtonClick(currentQuery + card.key)}
+                  data-card={card.key}
                 >
-                  {card.display}
+                  <span className="card-center">{card.display}</span>
                 </button>
               ))}
             </div>
@@ -278,8 +288,9 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
                     className={`keyboard-button card-button ${strength ? strength + '-card' : ''}`}
                     onClick={() => onButtonClick(currentQuery + card.key)}
                     style={getButtonStyle(card.key)}
+                    data-card={card.key}
                   >
-                    {card.display}
+                    <span className="card-center">{card.display}</span>
                     {getIndicatorLabel(card.key)}
                   </button>
                 );
