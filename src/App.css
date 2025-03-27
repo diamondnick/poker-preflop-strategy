@@ -91,19 +91,51 @@ body {
   padding-bottom: 60px; /* Add space for the footer */
 }
 
+/* Minimalistic header */
+.minimal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: var(--header);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Hide old header */
 .head {
-  text-align: center;
-  margin-bottom: 30px;
+  display: none;
 }
 
-.head h1 {
-  font-size: 8em;
-  margin-bottom: 0px;
-  font-family: 'EB Garamond', serif;
+/* Streamlined view mode toggle */
+.view-mode-toggle {
+  display: flex;
+  margin: 0;
 }
 
-.head .hi {
-  color: #4169E1;
+.view-mode-button {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin: 0 3px;
+}
+
+/* Minimalistic page layout */
+.page {
+  max-width: 600px;
+  margin: 10px auto;
+  padding: 15px;
+  background-color: var(--bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px var(--shadow);
 }
 
 .sub-head {
@@ -391,33 +423,40 @@ body {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
-  gap: 10px;
+  padding: 10px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--shadow);
 }
 
 .control-button {
   flex: 1;
-  padding: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 8px;
+  margin: 0 5px;
+  padding: 12px 15px;
+  font-size: 1rem;
   border: none;
+  border-radius: 6px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
-.clear-button {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.back-button {
-  background-color: #3498db;
-  color: white;
+.control-button:hover {
+  background-color: var(--button-hover);
 }
 
 .control-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.clear-button {
+  background-color: var(--clear-button);
+}
+
+.back-button {
+  background-color: var(--back-button);
 }
 
 /* Mobile optimizations for control buttons */
@@ -599,10 +638,6 @@ body {
   .current-query {
     font-size: 1.3rem;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
   }
   
   .button-group {
@@ -1143,65 +1178,390 @@ body {
   display: inline-block;
 }
 
-/* Enhanced mobile optimizations */
+/* Adjust text to prevent overlap */
+.advice {
+  width: 100%;
+  padding: 10px 5px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.advice p {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-size: 1.1rem;
+}
+
+.action-raise,
+.action-reraise,
+.action-call,
+.action-check,
+.action-fold {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 2px 0;
+  font-size: 0.95em;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Enhanced mobile optimizations for minimalistic design */
 @media (max-width: 576px) {
-  /* Hide stack size guide on mobile */
-  .stack-size-guide {
-    display: none;
+  .page {
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    box-shadow: none;
   }
   
-  /* Make cards more visible */
-  .card {
-    margin: 0 1px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  .minimal-header {
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
   }
   
-  /* Improve advice readability */
+  .app-title {
+    font-size: 1.1rem;
+  }
+  
+  /* Optimize for poker players using cell phones */
+  .virtual-keyboard {
+    margin-top: 5px;
+  }
+  
+  .current-query {
+    margin-bottom: 8px;
+  }
+  
+  /* Make the situation display more compact */
+  .situation-row {
+    padding: 10px 5px;
+    margin-bottom: 10px;
+  }
+  
+  .advice {
+    font-size: 1.1rem;
+    padding: 5px 2px;
+  }
+  
   .advice p {
-    margin-bottom: 12px;
-    line-height: 1.5;
+    margin-bottom: 8px;
+    font-size: 1rem;
   }
   
-  /* Make swipe indicators more visible */
-  .swipe-indicator {
-    width: 10px;
-    height: 10px;
-    margin: 0 6px;
+  /* Adjust action styling for mobile */
+  .action-raise,
+  .action-reraise,
+  .action-call,
+  .action-check,
+  .action-fold {
+    padding: 1px 4px;
+    font-size: 0.9em;
   }
   
-  .swipe-indicator.active {
-    width: 12px;
-    height: 12px;
+  /* Fix card display */
+  .card {
+    max-width: 18%;
+    height: auto;
+    object-fit: contain;
+    margin: 0 1px;
   }
   
-  /* Add pull-to-refresh hint */
+  /* Ensure content doesn't overflow */
   .situations-container {
+    padding: 0 2px;
+  }
+  
+  .col-xs-12 {
+    padding: 0 2px;
+  }
+}
+
+/* Dark mode variables */
+:root {
+  --bg-light: #f5f5f5;
+  --text-light: #333;
+  --card-bg-light: #fff;
+  --header-light: #4169E1;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  
+  --bg-dark: #121212;
+  --text-dark: #e0e0e0;
+  --card-bg-dark: #1e1e1e;
+  --header-dark: #3050b0;
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  
+  /* Default to light mode */
+  --bg: var(--bg-light);
+  --text: var(--text-light);
+  --card-bg: var(--card-bg-light);
+  --header: var(--header-light);
+  --shadow: var(--shadow-light);
+}
+
+/* Dark mode class */
+.dark-mode {
+  --bg: var(--bg-dark);
+  --text: var(--text-dark);
+  --card-bg: var(--card-bg-dark);
+  --header: var(--header-dark);
+  --shadow: var(--shadow-dark);
+}
+
+/* Apply variables */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page {
+  background-color: var(--bg);
+  box-shadow: 0 0 20px var(--shadow);
+}
+
+.head {
+  background-color: var(--header);
+}
+
+.situation-row {
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 5px var(--shadow);
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  background-color: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced mobile keyboard layout */
+@media (max-width: 576px) {
+  /* Optimize for one-handed operation */
+  .virtual-keyboard {
     position: relative;
+    padding-bottom: 70px; /* Space for fixed bottom controls */
   }
   
-  .situations-container::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 5px;
-    background-color: #ddd;
-    border-radius: 5px;
-    opacity: 0.7;
+  /* Position keyboard at bottom of screen for thumb access */
+  .button-groups {
+    margin-bottom: 10px;
   }
   
-  /* Optimize for iPhone notch */
-  @supports (padding-top: env(safe-area-inset-top)) {
-    .page {
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
-    }
-    
+  /* Make buttons larger and more thumb-friendly */
+  .keyboard-button {
+    min-width: 55px;
+    height: 65px;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    margin: 3px;
+  }
+  
+  /* Arrange buttons in a more thumb-accessible pattern */
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 5px;
+  }
+  
+  /* Improve button feedback */
+  .keyboard-button:active {
+    transform: scale(0.92);
+    transition: transform 0.1s;
+  }
+  
+  /* Improve visibility in dark environments */
+  .premium-indicator,
+  .strong-indicator,
+  .playable-indicator,
+  .marginal-indicator,
+  .weak-indicator,
+  .fold-indicator {
+    font-size: 0.8rem;
+    padding: 3px 5px;
+    margin-top: 4px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Dark mode specific adjustments */
+  .dark-mode .keyboard-button {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+  }
+  
+  .dark-mode .current-query {
+    background-color: rgba(40, 40, 40, 0.9);
+    color: #e0e0e0;
+  }
+  
+  .dark-mode .control-button {
+    opacity: 0.9;
+  }
+  
+  /* Adjust for iPhone X and newer */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
     .control-buttons {
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
     }
+  }
+}
+
+/* Mobile legend for quick reference */
+.mobile-legend {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--shadow);
+  font-size: 0.8rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+.legend-label {
+  color: var(--text);
+}
+
+.premium-legend .legend-color {
+  background-color: rgba(46, 204, 113, 0.8);
+}
+
+.fold-legend .legend-color {
+  background-color: rgba(231, 76, 60, 0.8);
+}
+
+/* Dark mode optimizations for poker tables */
+.dark-mode .premium-indicator {
+  background-color: rgba(46, 204, 113, 0.9);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .strong-indicator {
+  background-color: rgba(39, 174, 96, 0.9);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .playable-indicator {
+  background-color: rgba(52, 152, 219, 0.9);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .marginal-indicator {
+  background-color: rgba(241, 196, 15, 0.9);
+  color: #333;
+}
+
+.dark-mode .weak-indicator {
+  background-color: rgba(230, 126, 34, 0.9);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .fold-indicator {
+  background-color: rgba(231, 76, 60, 0.9);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode action styling */
+.dark-mode .action-raise {
+  color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.2);
+}
+
+.dark-mode .action-reraise {
+  color: #27ae60;
+  background-color: rgba(39, 174, 96, 0.2);
+}
+
+.dark-mode .action-call {
+  color: #3498db;
+  background-color: rgba(52, 152, 219, 0.2);
+}
+
+.dark-mode .action-check {
+  color: #f39c12;
+  background-color: rgba(243, 156, 18, 0.2);
+}
+
+.dark-mode .action-fold {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.2);
+}
+
+/* Optimize for poker table lighting conditions */
+@media (max-width: 576px) {
+  .dark-mode .keyboard-button {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark-mode .control-button {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Increase contrast for better visibility in dim lighting */
+  .dark-mode .current-query {
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Make swipe indicators more visible in dark mode */
+  .dark-mode .swipe-indicator {
+    background-color: #555;
+  }
+  
+  .dark-mode .swipe-indicator.active {
+    background-color: #3498db;
+  }
+  
+  /* Improve card visibility in dark mode */
+  .dark-mode .card {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Make swipe instructions more visible */
+  .dark-mode .swipe-instructions {
+    color: #bbb;
+    background-color: rgba(40, 40, 40, 0.5);
   }
 }
 
@@ -1282,5 +1642,289 @@ body {
     max-width: 20%;
     height: auto;
     object-fit: contain;
+  }
+}
+
+/* Enhanced mobile optimizations */
+@media (max-width: 576px) {
+  .page {
+    margin: 0;
+    padding: 10px;
+    box-shadow: none;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .col-xs-12 {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Center content */
+  .head {
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  /* Fix virtual keyboard width */
+  .virtual-keyboard {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 5px;
+  }
+  
+  .buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix situation container */
+  .situations-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 5px;
+  }
+  
+  .situation-row {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  /* Fix card display */
+  .card {
+    max-width: 20%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+/* Mobile optimizations for full-width elements */
+@media (max-width: 576px) {
+  /* Full-width app container */
+  .app {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--bg);
+  }
+  
+  /* Full-width page */
+  .page {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-x: hidden;
+    background-color: var(--bg);
+  }
+  
+  /* Full-width header */
+  .minimal-header {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 0;
+    margin: 0;
+    padding: 10px;
+  }
+  
+  /* Full-width keyboard buttons */
+  .button-group {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+  }
+  
+  .keyboard-button {
+    flex: 1 0 30%;
+    margin: 0;
+    min-width: 0;
+    box-sizing: border-box;
+    height: 65px;
+    border-radius: 0;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-right: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .keyboard-button:last-child {
+    border-right: none;
+  }
+  
+  .keyboard-button:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: var(--button-hover);
+  }
+  
+  /* Position buttons in 3 columns */
+  .position-buttons {
+    justify-content: space-between;
+  }
+  
+  .position-button {
+    flex: 1 0 33.33%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  /* Card buttons in 4 columns */
+  .card-buttons {
+    justify-content: space-between;
+  }
+  
+  .card-button {
+    flex: 1 0 25%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  /* Full-width current query display */
+  .current-query {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    background-color: transparent;
+    box-shadow: none;
+  }
+  
+  /* Full-width situation rows */
+  .situation-row {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 15px 10px;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  /* Full-width advice */
+  .advice {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    margin: 0;
+  }
+  
+  /* Full-width mobile legend */
+  .mobile-legend {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  /* Full-width control buttons */
+  .control-buttons {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  
+  .control-button {
+    margin: 0;
+    padding: 15px;
+    height: 60px;
+    font-size: 1.1rem;
+    border-radius: 0;
+  }
+  
+  .clear-button {
+    margin-right: 1px;
+  }
+  
+  /* Remove all container margins and paddings */
+  .container-fluid {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .row {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .col-xs-12 {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Ensure situations container is full width */
+  .situations-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Group label full width */
+  .group-label {
+    width: 100%;
+    text-align: left;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  /* Ensure dark mode toggle doesn't interfere */
+  .dark-mode-toggle {
+    z-index: 1000;
+    top: 10px;
+    right: 10px;
   }
 }

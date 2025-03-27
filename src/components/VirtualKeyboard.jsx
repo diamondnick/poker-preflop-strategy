@@ -1,7 +1,7 @@
 import React from 'react';
 import { cardArray, F, R, RR, C, RFIC1 } from '../data/cardData';
 
-function VirtualKeyboard({ onButtonClick, currentQuery }) {
+function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
   // Determine what stage of input we're in
   const queryLength = currentQuery.length;
   const showPositions = queryLength === 0;
@@ -220,7 +220,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
   };
 
   return (
-    <div className="virtual-keyboard">
+    <div className={`virtual-keyboard ${darkMode ? 'dark-mode' : ''}`}>
       {/* Display current query */}
       <div className="current-query">
         {currentQuery ? currentQuery : 'Select cards'}
@@ -232,7 +232,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
         {showPositions && (
           <div className="button-group">
             <div className="group-label">Position</div>
-            <div className="buttons">
+            <div className="buttons position-buttons">
               {positions.map(pos => (
                 <button 
                   key={pos.key} 
@@ -250,7 +250,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
         {showFirstCard && (
           <div className="button-group">
             <div className="group-label">First Card</div>
-            <div className="buttons">
+            <div className="buttons card-buttons">
               {cardRanks.map(card => (
                 <button 
                   key={card.key} 
@@ -268,7 +268,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
         {showSecondCard && (
           <div className="button-group">
             <div className="group-label">Second Card</div>
-            <div className="buttons">
+            <div className="buttons card-buttons">
               {cardRanks.map(card => {
                 const strength = getHandStrength(card.key);
                 
@@ -305,6 +305,20 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
           ← Back
         </button>
       </div>
+      
+      {/* Hand strength legend - only show on mobile when in second card selection */}
+      {showSecondCard && window.innerWidth <= 576 && (
+        <div className="mobile-legend">
+          <div className="legend-item premium-legend">
+            <span className="legend-color"></span>
+            <span className="legend-label">Premium: RAISE/RERAISE</span>
+          </div>
+          <div className="legend-item fold-legend">
+            <span className="legend-color"></span>
+            <span className="legend-label">Fold: FOLD</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

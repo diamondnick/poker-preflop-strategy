@@ -5,7 +5,7 @@ import VirtualKeyboard from './VirtualKeyboard';
 
 const cardService = new SituationService();
 
-function PreflopComponent() {
+function PreflopComponent({ darkMode }) {
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
@@ -135,36 +135,30 @@ function PreflopComponent() {
 
   return (
     <div className={`page ${tableMode ? 'table-mode' : ''}`}>
-      <div className="head">
-        <div className="container-fluid">
-          <div id="top" className="row">
-            <h1>Pre<span className="hi">flop</span></h1>
-            <div className="sub-head">poker strategy</div>
+      <div className="minimal-header">
+        <span className="app-title">Preflop Poker</span>
+        {window.innerWidth > 576 && (
+          <div className="view-mode-toggle">
+            <button 
+              className={`view-mode-button ${!tableMode ? 'active' : ''}`}
+              onClick={toggleTableMode}
+            >
+              Full View
+            </button>
+            <button 
+              className={`view-mode-button ${tableMode ? 'active' : ''}`}
+              onClick={toggleTableMode}
+            >
+              Table Mode
+            </button>
           </div>
-        </div>
+        )}
       </div>
-      
-      {/* Only show toggle on larger screens */}
-      {window.innerWidth > 576 && (
-        <div className="view-mode-toggle">
-          <button 
-            className={`view-mode-button ${!tableMode ? 'active' : ''}`}
-            onClick={toggleTableMode}
-          >
-            Full View
-          </button>
-          <button 
-            className={`view-mode-button ${tableMode ? 'active' : ''}`}
-            onClick={toggleTableMode}
-          >
-            Table Mode
-          </button>
-        </div>
-      )}
       
       <VirtualKeyboard 
         onButtonClick={handleKeyboardInput} 
         currentQuery={query} 
+        darkMode={darkMode}
       />
 
       <div 
