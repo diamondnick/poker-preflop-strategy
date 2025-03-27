@@ -1,5 +1,5 @@
 import React from 'react';
-import { cardArray, F } from '../data/cardData';
+import { cardArray, F, R, RR, C, RFIC1 } from '../data/cardData';
 
 function VirtualKeyboard({ onButtonClick, currentQuery }) {
   // Determine what stage of input we're in
@@ -33,52 +33,178 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
     { key: '2', display: '2' }
   ];
 
-  // Function to check if a card combination will result in a fold
-  const willFold = (card) => {
-    if (!showFirstCard && !showSecondCard) return false;
+  // Define premium hands
+  const premiumHands = ['AA', 'KK', 'QQ', 'AKs', 'AK'];
+  
+  // Define hand strength categories
+  const handStrengthCategories = {
+    PREMIUM: 'premium',   // Always raise (green)
+    STRONG: 'strong',     // Usually raise (light green)
+    PLAYABLE: 'playable', // Position dependent (blue)
+    MARGINAL: 'marginal', // Caution (yellow)
+    WEAK: 'weak',         // Usually fold (orange)
+    FOLD: 'fold'          // Always fold (red)
+  };
+
+  // Function to get hand strength category
+  const getHandStrength = (card) => {
+    if (!showSecondCard) return null;
     
-    // If we're selecting the first card, we can't determine yet
-    if (showFirstCard) return false;
+    const position = currentQuery[0];
+    const firstCard = currentQuery[1];
+    const secondCard = card;
     
-    // If we're selecting the second card
-    if (showSecondCard) {
-      const position = currentQuery[0];
-      const firstCard = currentQuery[1];
-      const secondCard = card;
-      
-      // Check both suited and unsuited combinations
-      const suitedCombo = `${firstCard}${secondCard}s`;
-      const unsuitedCombo = `${firstCard}${secondCard}`;
-      
-      // Find the index for the position
-      let posIndex;
-      switch (position) {
-        case 'E': posIndex = 3; break;
-        case 'M': posIndex = 1; break;
-        case 'L': posIndex = 5; break;
-        case 'S': posIndex = 7; break;
-        case 'B': posIndex = 9; break;
-        default: return true; // Default to fold if position is invalid
-      }
-      
-      // Check if the card is in the array and if both unraised and raised pots result in fold
-      for (let i = 0; i < cardArray.length; i++) {
-        // Check suited version
-        if (cardArray[i][0] === suitedCombo) {
-          return cardArray[i][posIndex] === F && cardArray[i][posIndex + 1] === F;
-        }
-        
-        // Check unsuited version
-        if (cardArray[i][0] === unsuitedCombo) {
-          return cardArray[i][posIndex] === F && cardArray[i][posIndex + 1] === F;
-        }
-      }
-      
-      // If we can't find the combination, it's a fold
-      return true;
+    // Check both suited and unsuited combinations
+    const suitedCombo = `${firstCard}${secondCard}s`;
+    const unsuitedCombo = `${firstCard}${secondCard}`;
+    const reversedSuitedCombo = `${secondCard}${firstCard}s`;
+    const reversedUnsuitedCombo = `${secondCard}${firstCard}`;
+    
+    // Premium hands
+    if (premiumHands.includes(suitedCombo) || 
+        premiumHands.includes(unsuitedCombo) ||
+        (firstCard === secondCard && ['A', 'K', 'Q'].includes(firstCard)) ||
+        ((firstCard === 'A' && secondCard === 'K') || (firstCard === 'K' && secondCard === 'A'))) {
+      return handStrengthCategories.PREMIUM;
     }
     
-    return false;
+    // Find the index for the position
+    let posIndex;
+    switch (position) {
+      case 'E': posIndex = 3; break;
+      case 'M': posIndex = 1; break;
+      case 'L': posIndex = 5; break;
+      case 'S': posIndex = 7; break;
+      case 'B': posIndex = 9; break;
+      default: return handStrengthCategories.FOLD;
+    }
+    
+    // Check hand in the card array
+    for (let i = 0; i < cardArray.length; i++) {
+      let handData = null;
+      
+      // Check all possible combinations
+      if (cardArray[i][0] === suitedCombo || cardArray[i][0] === unsuitedCombo ||
+          cardArray[i][0] === reversedSuitedCombo || cardArray[i][0] === reversedUnsuitedCombo) {
+        handData = cardArray[i];
+      }
+      
+      if (handData) {
+        const unraisedAction = handData[posIndex];
+        const raisedAction = handData[posIndex + 1];
+        
+        // Both actions are fold
+        if (unraisedAction === F && raisedAction === F) {
+          return handStrengthCategories.FOLD;
+        }
+        
+        // Both actions are raise or reraise
+        if ((unraisedAction === R || unraisedAction === RR) && 
+            (raisedAction === R || raisedAction === RR)) {
+          return handStrengthCategories.STRONG;
+        }
+        
+        // At least one action is raise
+        if (unraisedAction === R || unraisedAction === RR || 
+            raisedAction === R || raisedAction === RR) {
+          return handStrengthCategories.PLAYABLE;
+        }
+        
+        // At least one action is call
+        if (unraisedAction === C || raisedAction === C || 
+            unraisedAction === RFIC1 || raisedAction === RFIC1) {
+          return handStrengthCategories.MARGINAL;
+        }
+        
+        // Default to weak if we can't categorize
+        return handStrengthCategories.WEAK;
+      }
+    }
+    
+    // If we can't find the combination, it's a fold
+    return handStrengthCategories.FOLD;
+  };
+
+  // Function to check if a card combination will result in a fold
+  const willFold = (card) => {
+    return getHandStrength(card) === handStrengthCategories.FOLD;
+  };
+
+  // Function to check if a hand is premium
+  const isPremiumHand = (card) => {
+    return getHandStrength(card) === handStrengthCategories.PREMIUM;
+  };
+
+  // Function to get button style based on hand strength
+  const getButtonStyle = (card) => {
+    const strength = getHandStrength(card);
+    
+    if (!strength) return {};
+    
+    switch (strength) {
+      case handStrengthCategories.PREMIUM:
+        return {
+          backgroundColor: 'rgba(46, 204, 113, 0.2)',
+          color: '#27ae60',
+          borderColor: '#27ae60'
+        };
+      case handStrengthCategories.STRONG:
+        return {
+          backgroundColor: 'rgba(39, 174, 96, 0.15)',
+          color: '#27ae60',
+          borderColor: '#27ae60'
+        };
+      case handStrengthCategories.PLAYABLE:
+        return {
+          backgroundColor: 'rgba(52, 152, 219, 0.15)',
+          color: '#2980b9',
+          borderColor: '#2980b9'
+        };
+      case handStrengthCategories.MARGINAL:
+        return {
+          backgroundColor: 'rgba(241, 196, 15, 0.15)',
+          color: '#f39c12',
+          borderColor: '#f39c12'
+        };
+      case handStrengthCategories.WEAK:
+        return {
+          backgroundColor: 'rgba(230, 126, 34, 0.15)',
+          color: '#d35400',
+          borderColor: '#d35400'
+        };
+      case handStrengthCategories.FOLD:
+        return {
+          backgroundColor: 'rgba(231, 76, 60, 0.2)',
+          color: '#e74c3c',
+          borderColor: '#e74c3c'
+        };
+      default:
+        return {};
+    }
+  };
+
+  // Function to get indicator label based on hand strength
+  const getIndicatorLabel = (card) => {
+    const strength = getHandStrength(card);
+    
+    if (!strength) return null;
+    
+    switch (strength) {
+      case handStrengthCategories.PREMIUM:
+        return <span className="premium-indicator">RAISE</span>;
+      case handStrengthCategories.STRONG:
+        return <span className="strong-indicator">RAISE</span>;
+      case handStrengthCategories.PLAYABLE:
+        return <span className="playable-indicator">PLAY</span>;
+      case handStrengthCategories.MARGINAL:
+        return <span className="marginal-indicator">CAUTION</span>;
+      case handStrengthCategories.WEAK:
+        return <span className="weak-indicator">WEAK</span>;
+      case handStrengthCategories.FOLD:
+        return <span className="fold-indicator">FOLD</span>;
+      default:
+        return null;
+    }
   };
 
   // Clear button handler
@@ -111,7 +237,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
                 <button 
                   key={pos.key} 
                   className="keyboard-button position-button"
-                  onClick={() => onButtonClick(pos.key)}
+                  onClick={() => onButtonClick(pos.key, true)}
                 >
                   {pos.display}
                 </button>
@@ -144,20 +270,17 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
             <div className="group-label">Second Card</div>
             <div className="buttons">
               {cardRanks.map(card => {
-                const isFold = willFold(card.key);
+                const strength = getHandStrength(card.key);
+                
                 return (
                   <button 
                     key={card.key} 
-                    className={`keyboard-button card-button ${isFold ? 'fold-card' : ''}`}
+                    className={`keyboard-button card-button ${strength ? strength + '-card' : ''}`}
                     onClick={() => onButtonClick(currentQuery + card.key)}
-                    style={isFold ? {
-                      backgroundColor: 'rgba(231, 76, 60, 0.2)',
-                      color: '#e74c3c',
-                      borderColor: '#e74c3c'
-                    } : {}}
+                    style={getButtonStyle(card.key)}
                   >
                     {card.display}
-                    {isFold && <span className="fold-indicator">FOLD</span>}
+                    {getIndicatorLabel(card.key)}
                   </button>
                 );
               })}
@@ -165,6 +288,39 @@ function VirtualKeyboard({ onButtonClick, currentQuery }) {
           </div>
         )}
       </div>
+      
+      {/* Hand strength legend (only show when selecting second card) */}
+      {showSecondCard && (
+        <div className="hand-strength-legend">
+          <div className="legend-title">Hand Strength</div>
+          <div className="legend-items">
+            <div className="legend-item premium-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Premium</div>
+            </div>
+            <div className="legend-item strong-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Strong</div>
+            </div>
+            <div className="legend-item playable-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Playable</div>
+            </div>
+            <div className="legend-item marginal-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Marginal</div>
+            </div>
+            <div className="legend-item weak-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Weak</div>
+            </div>
+            <div className="legend-item fold-legend">
+              <div className="legend-color"></div>
+              <div className="legend-label">Fold</div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Control buttons */}
       <div className="control-buttons">

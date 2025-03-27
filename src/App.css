@@ -63,6 +63,7 @@ body {
   margin: 55px 80px auto;
   padding: 25px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  padding-bottom: 60px; /* Add space for the footer */
 }
 
 .head {
@@ -123,23 +124,24 @@ body {
 .situations-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 100%;
+  padding: 10px;
 }
 
 .situation-row {
   display: flex;
   flex-wrap: wrap;
   padding: 15px;
-  width: 100%;
-  justify-content: flex-start;
+  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .card {
-  width: 50px;
-  height: 100px;
+  width: 40px;
+  height: 80px;
   padding: 0;
-  margin: 0;
+  margin: 0 2px;
 }
 
 .advice-column {
@@ -153,6 +155,9 @@ body {
 .advice {
   width: 100%;
   padding-top: 20px;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 10px;
 }
 
 .advice p {
@@ -482,7 +487,58 @@ body {
   font-weight: bold;
 }
 
-/* Table mode toggle */
+/* Swipe navigation indicators */
+.swipe-indicators {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.swipe-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin: 0 5px;
+}
+
+.swipe-indicator.active {
+  background-color: #3498db;
+  width: 10px;
+  height: 10px;
+}
+
+/* Footer with swipe instructions */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  border-top: 1px solid #eee;
+}
+
+/* Mobile optimizations */
+@media (max-width: 576px) {
+  .advice {
+    font-size: 1.4rem;
+  }
+  
+  .card {
+    width: 35px;
+    height: 70px;
+  }
+  
+  .situation-row {
+    padding: 10px;
+  }
+}
+
+/* View mode toggle styles */
 .view-mode-toggle {
   display: flex;
   justify-content: center;
@@ -537,32 +593,62 @@ body {
   height: 80px;
 }
 
-/* Swipe navigation indicators */
-.swipe-indicators {
+/* Remove the footer with swipe instructions */
+.footer {
+  display: none;
+}
+
+/* Reset card sizes for non-table mode */
+.card {
+  width: 50px;
+  height: 100px;
+  padding: 0;
+  margin: 0;
+}
+
+.situations-container {
   display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.situation-row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* Formatted query styling */
+.formatted-query {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 10px 0;
+  gap: 8px;
 }
 
-.swipe-indicator {
-  width: 8px;
-  height: 8px;
-  background-color: #bdc3c7;
-  border-radius: 50%;
-  margin: 0 5px;
+.query-position {
+  font-weight: bold;
+  color: #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-.swipe-indicator.active {
-  background-color: #4169E1;
+.query-cards {
+  font-weight: bold;
+  color: #2c3e50;
+  background-color: rgba(44, 62, 80, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 @media (max-width: 576px) {
-  .advice {
-    font-size: 1.3rem;
-  }
-  
-  .table-mode .advice {
-    font-size: 1.5rem;
+  .current-query {
+    font-size: 1.2rem;
+    padding: 10px;
   }
 }
 
@@ -592,5 +678,187 @@ body {
     padding: 1px 3px;
     top: -6px;
     right: -6px;
+  }
+}
+
+/* Premium hand indicator styling */
+.premium-card {
+  position: relative;
+  overflow: visible !important;
+}
+
+.premium-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #27ae60;
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  transform: rotate(0deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Add a small star icon to premium hands */
+.premium-indicator::before {
+  content: "★ ";
+  font-size: 0.7rem;
+}
+
+@media (max-width: 576px) {
+  .premium-indicator {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+    top: -6px;
+    right: -6px;
+  }
+  
+  .premium-indicator::before {
+    font-size: 0.6rem;
+  }
+}
+
+/* Hand strength indicators styling */
+.premium-card, .strong-card, .playable-card, .marginal-card, .weak-card, .fold-card {
+  position: relative;
+  overflow: visible !important;
+}
+
+.premium-indicator, .strong-indicator, .playable-indicator, .marginal-indicator, .weak-indicator, .fold-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  transform: rotate(0deg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.premium-indicator {
+  background-color: #27ae60;
+}
+
+.strong-indicator {
+  background-color: #2ecc71;
+}
+
+.playable-indicator {
+  background-color: #3498db;
+}
+
+.marginal-indicator {
+  background-color: #f1c40f;
+}
+
+.weak-indicator {
+  background-color: #e67e22;
+}
+
+.fold-indicator {
+  background-color: #e74c3c;
+}
+
+/* Add a small star icon to premium hands */
+.premium-indicator::before {
+  content: "★ ";
+  font-size: 0.7rem;
+}
+
+/* Hand strength legend */
+.hand-strength-legend {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 2px 5px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.legend-label {
+  font-size: 0.8rem;
+}
+
+.premium-legend .legend-color {
+  background-color: #27ae60;
+}
+
+.strong-legend .legend-color {
+  background-color: #2ecc71;
+}
+
+.playable-legend .legend-color {
+  background-color: #3498db;
+}
+
+.marginal-legend .legend-color {
+  background-color: #f1c40f;
+}
+
+.weak-legend .legend-color {
+  background-color: #e67e22;
+}
+
+.fold-legend .legend-color {
+  background-color: #e74c3c;
+}
+
+@media (max-width: 576px) {
+  .premium-indicator, .strong-indicator, .playable-indicator, .marginal-indicator, .weak-indicator, .fold-indicator {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+    top: -6px;
+    right: -6px;
+  }
+  
+  .premium-indicator::before {
+    font-size: 0.6rem;
+  }
+  
+  .legend-items {
+    gap: 4px;
+  }
+  
+  .legend-item {
+    margin: 1px 3px;
+  }
+  
+  .legend-color {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .legend-label {
+    font-size: 0.7rem;
   }
 }

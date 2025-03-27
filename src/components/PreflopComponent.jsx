@@ -13,7 +13,7 @@ function PreflopComponent() {
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-
+  
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
 
@@ -52,7 +52,7 @@ function PreflopComponent() {
 
   // Function to get the correct image path
   const getCardImagePath = (card, suit) => {
-    return `/images/svg-cards/${card}_of_${suit}.svg`;
+    return `/images/svg-cards/${card}_${suit}.svg`;
   };
 
   // Toggle between normal and table mode
@@ -102,22 +102,9 @@ function PreflopComponent() {
   const colorCodeAction = (action) => {
     if (!action) return action;
     
-    console.log('Action value:', action, 'Type:', typeof action);
-    
     // Handle the exact 'F' value from cardData.js
     if (action === 'F' || action === 'Fold') {
-      console.log('FOLD match found!');
-      return <span className="action-fold" style={{
-        color: '#e74c3c',
-        fontWeight: 'bold',
-        fontSize: '1.2em',
-        letterSpacing: '1px',
-        textTransform: 'uppercase',
-        backgroundColor: 'rgba(231, 76, 60, 0.1)',
-        padding: '2px 8px',
-        borderRadius: '4px',
-        display: 'inline-block'
-      }}>FOLD</span>;
+      return <span className="action-fold">FOLD</span>;
     }
     
     const lowerAction = action.toLowerCase();
