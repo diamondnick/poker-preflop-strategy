@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SituationService } from '../models/SituationService';
+import StackSizeGuide from './StackSizeGuide';
 
 const cardService = new SituationService();
 
@@ -83,6 +84,8 @@ function PreflopComponent() {
           </div>
         ))}
       </div>
+      
+      <StackSizeGuide />
     </div>
   );
 }
