@@ -1,7 +1,9 @@
 import React from 'react';
 import { cardArray, F, R, RR, C, RFIC1 } from '../data/cardData';
+import WinProbability from './WinProbability';
+import { getWinProbability } from '../data/oddsData';
 
-function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
+function VirtualKeyboard({ onButtonClick, currentQuery, darkMode, settings }) {
   // Determine what stage of input we're in
   const queryLength = currentQuery.length;
   const showPositions = queryLength === 0;
@@ -206,6 +208,45 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
     }
   };
 
+  // Function to calculate win probability for a potential hand
+  const calculateWinProbability = (secondCard) => {
+    if (!showSecondCard) return null;
+    
+    const position = currentQuery[0];
+    const firstCard = currentQuery[1];
+    
+    // Normalize hand format (pocket pair or suited/unsuited)
+    let handString = `${firstCard}${secondCard}`;
+    if (firstCard === secondCard) {
+      // Pocket pair
+      handString = `${firstCard}${secondCard}`;
+    } else {
+      // Assume unsuited for simplicity
+      handString = `${firstCard}${secondCard}`;
+    }
+    
+    // Calculate probability
+    return getWinProbability(handString, position, settings?.tableSize || 9);
+  };
+  
+  // Get color based on probability
+  const getProbabilityColor = (prob) => {
+    if (prob >= 65) return '#4CAF50'; // Green
+    if (prob >= 55) return '#8BC34A'; // Light green
+    if (prob >= 45) return '#FFC107'; // Yellow
+    if (prob >= 35) return '#FF9800'; // Orange
+    return '#F44336'; // Red
+  };
+
+  // Get background color for probability indicator
+  const getProbabilityBackground = (prob) => {
+    if (prob >= 65) return 'rgba(76, 175, 80, 0.3)'; // Green
+    if (prob >= 55) return 'rgba(139, 195, 74, 0.3)'; // Light green
+    if (prob >= 45) return 'rgba(255, 193, 7, 0.3)'; // Yellow
+    if (prob >= 35) return 'rgba(255, 152, 0, 0.3)'; // Orange
+    return 'rgba(244, 67, 54, 0.3)'; // Red
+  };
+
   // Clear button handler
   const handleClear = () => {
     onButtonClick('', true);
@@ -305,6 +346,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
             <div className="buttons card-buttons">
               {cardRanks.map(card => {
                 const strength = getHandStrength(card.key);
+                const winProbability = calculateWinProbability(card.key);
                 
                 return (
                   <button 
@@ -316,6 +358,13 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
                   >
                     <span className="card-center">{card.display}</span>
                     {getIndicatorLabel(card.key)}
+                    {showSecondCard && winProbability && (
+                      <div className="win-probability" style={{ 
+                        backgroundColor: getProbabilityBackground(winProbability)
+                      }}>
+                        {Math.round(winProbability)}%
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -353,6 +402,17 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode }) {
             <span className="legend-label">Fold: FOLD</span>
           </div>
         </div>
+      )}
+      
+      {/* Win Probability */}
+      {(showFirstCard || showSecondCard || currentQuery.length >= 3) && (
+        <WinProbability 
+          position={currentQuery[0]}
+          firstCard={currentQuery.length > 1 ? currentQuery[1] : ''}
+          secondCard={currentQuery.length > 2 ? currentQuery[2] : ''}
+          settings={settings}
+          darkMode={darkMode}
+        />
       )}
     </div>
   );

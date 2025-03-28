@@ -498,7 +498,7 @@ body {
 
 .card-button {
   position: relative;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.7) !important;
   color: black;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -512,6 +512,10 @@ body {
   height: 90px; 
   width: 65px; 
   margin: 4px; 
+}
+
+.dark-mode .card-button {
+  background-color: rgba(51, 51, 51, 0.7) !important;
 }
 
 .card-button[data-card="A"],
@@ -1863,14 +1867,20 @@ body {
 
 .card-button {
   position: relative;
-  overflow: hidden;
-  padding: 0;
-  background-color: transparent;
-  border: 1px solid #ddd;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-weight: bold;
+  padding: 0;
+  overflow: hidden;
+  height: 90px; 
+  width: 65px; 
+  margin: 4px; 
 }
 
 .premium-card,
@@ -2014,23 +2024,47 @@ body {
   }
 }
 
-/* Card button styling */
-.card-button {
-  position: relative;
-  background-color: white;
-  color: black;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Card button win probability */
+.card-button .win-probability {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.9rem;
   font-weight: bold;
-  padding: 0;
+  text-align: center;
+  padding: 3px 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white !important;
+  border-radius: 0 0 4px 4px;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.card-button:hover .win-probability {
+  padding: 5px 0;
+  font-size: 1rem;
+}
+
+.dark-mode .card-button .win-probability {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Adjust card button background opacity */
+.card-button {
+  background-color: rgba(255, 255, 255, 0.9) !important;
   overflow: hidden;
-  height: 90px; 
-  width: 65px; 
-  margin: 4px; 
+  transition: transform 0.1s ease;
+}
+
+.card-button:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.dark-mode .card-button {
+  background-color: rgba(51, 51, 51, 0.9) !important;
 }
 
 /* Red cards (hearts and diamonds) */
@@ -2324,4 +2358,52 @@ body {
   .settings-footer {
     padding: 12px 15px;
   }
+}
+
+/* Win Probability Styles */
+.win-probability {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.probability-meter-container {
+  position: relative;
+  height: 25px;
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.probability-meter {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.probability-value {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.dark .probability-value {
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+}
+
+.probability-label {
+  font-size: 0.9rem;
+  color: var(--text);
+  text-align: center;
 }

@@ -181,6 +181,7 @@ function PreflopComponent({ darkMode }) {
         onButtonClick={handleKeyboardInput} 
         currentQuery={query} 
         darkMode={darkMode}
+        settings={settings}
       />
 
       <div 
