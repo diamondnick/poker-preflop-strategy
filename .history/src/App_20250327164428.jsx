@@ -96,7 +96,13 @@ function App() {
         <meta name="application-name" content="PokerEdge" />
       </Helmet>
       
-
+      <button 
+        className="dark-mode-toggle" 
+        onClick={toggleDarkMode}
+        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {darkMode ? '☀️' : '🌙'}
+      </button>
       <PreflopComponent darkMode={darkMode} />
     </div>
   );

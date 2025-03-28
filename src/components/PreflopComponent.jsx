@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SituationService } from '../models/SituationService';
 import StackSizeGuide from './StackSizeGuide';
 import VirtualKeyboard from './VirtualKeyboard';
+import SettingsComponent from './SettingsComponent';
 
 const cardService = new SituationService();
 
@@ -9,8 +10,18 @@ function PreflopComponent({ darkMode }) {
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
-  const [tableMode, setTableMode] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [showStackSizeGuide, setShowStackSizeGuide] = useState(false);
+  const [tableMode, setTableMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState(() => {
+    // Load settings from localStorage or use defaults
+    const savedSettings = localStorage.getItem('pokerEdgeSettings');
+    return savedSettings ? JSON.parse(savedSettings) : {
+      tableSize: 9,
+      stackSize: 'medium'
+    };
+  });
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   
@@ -26,13 +37,13 @@ function PreflopComponent({ darkMode }) {
   useEffect(() => {
     // Filter situations when query changes
     if (query) {
-      const filtered = cardService.getSituationByQuery(query);
+      const filtered = cardService.getSituationByQuery(query, 10, settings);
       setFilteredItems(filtered);
       setCurrentItemIndex(0); // Reset to first item when query changes
     } else {
       setFilteredItems([]);
     }
-  }, [query]);
+  }, [query, settings]);
 
   useEffect(() => {
     // Auto-enable table mode on mobile
@@ -136,24 +147,35 @@ function PreflopComponent({ darkMode }) {
   return (
     <div className={`page ${tableMode ? 'table-mode' : ''}`}>
       <div className="minimal-header">
-        <span className="app-title">PokerEdge</span>
-        {window.innerWidth > 576 && (
-          <div className="view-mode-toggle">
-            <button 
-              className={`view-mode-button ${!tableMode ? 'active' : ''}`}
-              onClick={toggleTableMode}
-            >
-              Full View
-            </button>
-            <button 
-              className={`view-mode-button ${tableMode ? 'active' : ''}`}
-              onClick={toggleTableMode}
-            >
-              Table Mode
-            </button>
-          </div>
-        )}
+        <span className="app-title">♠️ PokerEdge</span>
+        <div className="header-controls">
+          <button 
+            className="mode-toggle" 
+            onClick={toggleTableMode}
+            aria-label={tableMode ? 'Switch to normal mode' : 'Switch to table mode'}
+          >
+            {tableMode ? '📱' : '🎮'}
+          </button>
+          <button 
+            className="settings-button" 
+            onClick={() => setShowSettings(true)}
+            aria-label="Settings"
+          >
+            ⚙️
+          </button>
+        </div>
       </div>
+      
+      {showSettings && (
+        <SettingsComponent 
+          onClose={() => setShowSettings(false)}
+          onSave={(newSettings) => {
+            setSettings(newSettings);
+            setShowSettings(false);
+          }}
+          initialSettings={settings}
+        />
+      )}
       
       <VirtualKeyboard 
         onButtonClick={handleKeyboardInput} 
@@ -307,6 +329,15 @@ function PreflopComponent({ darkMode }) {
             </div>
           ) : null
         )}
+      </div>
+      
+      <div className="footer-info">
+        <div className="table-size-indicator">
+          Table Size: {settings.tableSize} players
+        </div>
+        <div className="stack-size-indicator">
+          Stack: {settings.stackSize === 'short' ? 'Short' : settings.stackSize === 'medium' ? 'Medium' : 'Deep'}
+        </div>
       </div>
       
       <StackSizeGuide />

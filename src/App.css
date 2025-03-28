@@ -94,60 +94,121 @@ body {
 /* Minimalistic header */
 .minimal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 10px 15px;
-  background-color: var(--header);
+  align-items: center;
+  padding: 12px 15px;
+  background-color: var(--primary-dark);
   color: white;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px var(--shadow);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-/* App title styling */
 .app-title {
   font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-toggle, 
+.settings-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.app-title::before {
-  content: "♠";
-  margin-right: 5px;
-  font-size: 1.1rem;
-  vertical-align: middle;
+.mode-toggle:hover, 
+.settings-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Dark mode app title */
-.dark-mode .app-title {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+/* Updated header styling */
+.minimal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: var(--primary-dark);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-/* Mobile optimizations for app title */
+.app-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-toggle, 
+.settings-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.mode-toggle:hover, 
+.settings-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Footer info styling */
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #eee;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 15px;
+}
+
+.table-size-indicator,
+.stack-size-indicator {
+  padding: 5px 10px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+/* Mobile optimizations */
 @media (max-width: 576px) {
+  .minimal-header {
+    padding: 10px 12px;
+  }
+  
   .app-title {
     font-size: 1.2rem;
   }
-}
-
-/* Hide old header */
-.head {
-  display: none;
-}
-
-/* Streamlined view mode toggle */
-.view-mode-toggle {
-  display: flex;
-  margin: 0;
-}
-
-.view-mode-button {
-  font-size: 0.8rem;
-  padding: 6px 10px;
-  border-radius: 4px;
-  margin: 0 3px;
+  
+  .footer-info {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
 }
 
 /* Minimalistic page layout */
@@ -2121,5 +2182,146 @@ body {
     font-size: 0.55rem;
     padding: 2px 0;
     border-radius: 0 0 8px 8px;
+  }
+}
+
+/* Settings Component Styling */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.settings-panel {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #777;
+}
+
+.settings-content {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.settings-group {
+  margin-bottom: 20px;
+}
+
+.settings-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.settings-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.setting-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  gap: 10px;
+}
+
+.cancel-button {
+  background-color: #f1f1f1;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.save-button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Settings button in header */
+.settings-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+/* Mobile optimizations for settings */
+@media (max-width: 576px) {
+  .settings-panel {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .settings-header {
+    padding: 12px 15px;
+  }
+  
+  .settings-content {
+    padding: 15px;
+  }
+  
+  .settings-footer {
+    padding: 12px 15px;
   }
 }
