@@ -3,6 +3,7 @@ import { SituationService } from '../models/SituationService';
 import StackSizeGuide from './StackSizeGuide';
 import VirtualKeyboard from './VirtualKeyboard';
 import SettingsComponent from './SettingsComponent';
+import { getWinProbability } from '../data/oddsData';
 
 const cardService = new SituationService();
 
@@ -144,6 +145,72 @@ function PreflopComponent({ darkMode }) {
     return action;
   };
 
+  // Function to get color based on probability
+  const getProbabilityColor = (prob) => {
+    if (prob >= 65) return '#4CAF50'; // Green
+    if (prob >= 55) return '#8BC34A'; // Light green
+    if (prob >= 45) return '#FFC107'; // Yellow
+    if (prob >= 35) return '#FF9800'; // Orange
+    return '#F44336'; // Red
+  };
+
+  // Function to format hand for win probability calculation
+  const formatHandForProbability = (card1, card2, isSuited) => {
+    if (card1 === card2) {
+      return `${card1}${card2}`;
+    } else if (isSuited) {
+      return `${card1}${card2}s`;
+    } else {
+      return `${card1}${card2}`;
+    }
+  };
+
+  // Function to calculate and display win probability
+  const displayWinProbability = (card1, card2, isSuited, position, isRaisedPot = false) => {
+    const hand = formatHandForProbability(card1, card2, isSuited);
+    // Base probability from the hand
+    let probability = getWinProbability(hand, position, settings.tableSize);
+    
+    // Adjust probability based on whether the pot is raised
+    if (isRaisedPot) {
+      // In raised pots, stronger hands are needed to continue
+      probability = probability * 0.9; // Reduce probability by 10% for raised pots
+    }
+    
+    // Adjust for suited vs unsuited (if not a pair)
+    if (card1 !== card2) {
+      if (isSuited) {
+        probability = probability * 1.1; // Increase by 10% for suited hands
+      } else {
+        probability = probability * 0.95; // Decrease by 5% for offsuit hands
+      }
+    }
+    
+    // Ensure probability stays within reasonable bounds
+    probability = Math.min(Math.max(probability, 5), 95);
+    
+    const roundedProb = Math.round(probability);
+    const color = getProbabilityColor(probability);
+    
+    return (
+      <div className="win-probability-container">
+        <div className="probability-meter-mini">
+          <div 
+            className="probability-bar" 
+            style={{ width: `${probability}%`, backgroundColor: color }}
+          />
+          <span className="probability-value" style={{ color: '#000', fontWeight: 'bold', textShadow: '0 0 3px rgba(255, 255, 255, 0.9)' }}>
+            {roundedProb}%
+          </span>
+        </div>
+        <div className="probability-label">
+          Win Probability {isSuited ? '(Suited)' : card1 === card2 ? '(Pair)' : '(Offsuit)'} 
+          {isRaisedPot ? ' - Raised Pot' : ''}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`page ${tableMode ? 'table-mode' : ''}`}>
       <div className="minimal-header">
@@ -216,6 +283,7 @@ function PreflopComponent({ darkMode }) {
                           colorCodeAction(filteredItems[currentItemIndex].unraisedPot)
                         }
                       </div>
+                      {displayWinProbability(filteredItems[currentItemIndex].card1, filteredItems[currentItemIndex].card2, filteredItems[currentItemIndex].isSuited, filteredItems[currentItemIndex].position)}
                     </div>
                     
                     <div className="advice-section">
@@ -226,6 +294,7 @@ function PreflopComponent({ darkMode }) {
                           colorCodeAction(filteredItems[currentItemIndex].raisedPot)
                         }
                       </div>
+                      {displayWinProbability(filteredItems[currentItemIndex].card1, filteredItems[currentItemIndex].card2, filteredItems[currentItemIndex].isSuited, filteredItems[currentItemIndex].position, true)}
                     </div>
                   </div>
                 </div>
@@ -306,6 +375,7 @@ function PreflopComponent({ darkMode }) {
                         colorCodeAction(item.unraisedPot)
                       }
                     </div>
+                    {displayWinProbability(item.card1, item.card2, item.isSuited, item.position)}
                   </div>
                   
                   <div className="advice-section">
@@ -316,6 +386,7 @@ function PreflopComponent({ darkMode }) {
                         colorCodeAction(item.raisedPot)
                       }
                     </div>
+                    {displayWinProbability(item.card1, item.card2, item.isSuited, item.position, true)}
                   </div>
                 </div>
               </div>
