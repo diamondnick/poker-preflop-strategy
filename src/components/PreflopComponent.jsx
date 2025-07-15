@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { SituationService } from '../models/SituationService';
-import StackSizeGuide from './StackSizeGuide';
 import VirtualKeyboard from './VirtualKeyboard';
 import SettingsComponent from './SettingsComponent';
 import { getWinProbability } from '../data/oddsData';
@@ -12,15 +11,14 @@ function PreflopComponent({ darkMode }) {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
-  const [showStackSizeGuide, setShowStackSizeGuide] = useState(false);
+
   const [tableMode, setTableMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState(() => {
     // Load settings from localStorage or use defaults
     const savedSettings = localStorage.getItem('pokerEdgeSettings');
     return savedSettings ? JSON.parse(savedSettings) : {
-      tableSize: 9,
-      stackSize: 'medium'
+      tableSize: 9
     };
   });
   const [touchStart, setTouchStart] = useState(null);
@@ -36,11 +34,25 @@ function PreflopComponent({ darkMode }) {
   }, []);
 
   useEffect(() => {
-    // Filter situations when query changes
+    // Filter situations when query changes - only show results when query is complete
     if (query) {
-      const filtered = cardService.getSituationByQuery(query, 10, settings);
-      setFilteredItems(filtered);
-      setCurrentItemIndex(0); // Reset to first item when query changes
+      // Check if query is complete:
+      // - Position (1 char) + Card1 (1 char) + Card2 (1 char) = 3 chars for pairs
+      // - Position (1 char) + Card1 (1 char) + Card2 (1 char) + Suited/Offsuit (1 char) = 4 chars for non-pairs
+      const isComplete = query.length >= 3 && (
+        // Pocket pair (same cards)
+        (query.length === 3 && query[1] === query[2]) ||
+        // Non-pair with suited/offsuit indicator
+        (query.length === 4 && (query[3] === 's' || query[3] === 'o'))
+      );
+      
+      if (isComplete) {
+        const filtered = cardService.getSituationByQuery(query, 10, settings);
+        setFilteredItems(filtered);
+        setCurrentItemIndex(0); // Reset to first item when query changes
+      } else {
+        setFilteredItems([]); // Don't show results until query is complete
+      }
     } else {
       setFilteredItems([]);
     }
@@ -321,34 +333,50 @@ function PreflopComponent({ darkMode }) {
             </>
           ) : (
             // No results in table mode
-            query ? (
-              <div className="situation-row">
-                <div className="advice-column">
-                  <div className="advice">
-                    <span style={{
-                      color: '#e74c3c',
-                      fontWeight: 'bold',
-                      fontSize: '1.5em',
-                      letterSpacing: '2px',
-                      textTransform: 'uppercase',
-                      backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                      padding: '10px 20px',
-                      borderRadius: '4px',
-                      display: 'inline-block',
-                      margin: '20px 0'
-                    }}>FOLD</span>
+            (() => {
+              // Check if query is complete
+              const isQueryComplete = query && query.length >= 3 && (
+                // Pocket pair (same cards)
+                (query.length === 3 && query[1] === query[2]) ||
+                // Non-pair with suited/offsuit indicator
+                (query.length === 4 && (query[3] === 's' || query[3] === 'o'))
+              );
+              
+              if (isQueryComplete) {
+                // Query is complete but no results found - show FOLD
+                return (
+                  <div className="situation-row">
+                    <div className="advice-column">
+                      <div className="advice">
+                        <span style={{
+                          color: '#e74c3c',
+                          fontWeight: 'bold',
+                          fontSize: '1.5em',
+                          letterSpacing: '2px',
+                          textTransform: 'uppercase',
+                          backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                          padding: '10px 20px',
+                          borderRadius: '4px',
+                          display: 'inline-block',
+                          margin: '20px 0'
+                        }}>FOLD</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              <div className="situation-row">
-                <div className="advice-column">
-                  <div className="advice">
-                    <p>Use the keyboard above to select a position and cards</p>
+                );
+              } else {
+                // Query is incomplete - show instruction
+                return (
+                  <div className="situation-row">
+                    <div className="advice-column">
+                      <div className="advice">
+                        <p>Use the keyboard above to select a position and cards</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )
+                );
+              }
+            })()
           )
         ) : (
           // Normal mode - show list of items
@@ -407,12 +435,7 @@ function PreflopComponent({ darkMode }) {
         <div className="table-size-indicator">
           Table Size: {settings.tableSize} players
         </div>
-        <div className="stack-size-indicator">
-          Stack: {settings.stackSize === 'short' ? 'Short' : settings.stackSize === 'medium' ? 'Medium' : 'Deep'}
-        </div>
       </div>
-      
-      <StackSizeGuide />
     </div>
   );
 }

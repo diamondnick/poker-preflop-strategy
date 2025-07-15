@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 const SettingsComponent = ({ onClose, onSave, initialSettings, darkMode, onDarkModeToggle }) => {
   const [settings, setSettings] = useState({
     tableSize: initialSettings?.tableSize || 9,
-    stackSize: initialSettings?.stackSize || 'medium',
     darkMode: darkMode,
     ...initialSettings
   });
@@ -75,23 +74,7 @@ const SettingsComponent = ({ onClose, onSave, initialSettings, darkMode, onDarkM
             </div>
           </div>
           
-          <div className="settings-group">
-            <label htmlFor="stackSize">Stack Size</label>
-            <select 
-              id="stackSize" 
-              name="stackSize" 
-              value={settings.stackSize} 
-              onChange={handleChange}
-            >
-              <option value="short">Short Stack (≤ 25 BB)</option>
-              <option value="medium">Medium Stack (25-75 BB)</option>
-              <option value="deep">Deep Stack (≥ 75 BB)</option>
-            </select>
-            <div className="setting-description">
-              Stack size affects optimal play. Shorter stacks favor more all-in plays with medium strength hands.
-            </div>
-          </div>
-          
+
           <div className="settings-group">
             <label>Display Mode</label>
             <div className="toggle-option">

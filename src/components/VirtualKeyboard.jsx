@@ -9,6 +9,7 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode, settings }) {
   const showPositions = queryLength === 0;
   const showFirstCard = queryLength === 1;
   const showSecondCard = queryLength === 2;
+  const showSuitedChoice = queryLength === 3 && currentQuery[1] !== currentQuery[2]; // Only show for non-pairs
   
   // Card ranks and positions
   const positions = [
@@ -281,7 +282,29 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode, settings }) {
             {currentQuery.length >= 3 && currentQuery[2] && (
               <>
                 {currentQuery[2] === 's' || currentQuery[2] === 'o' ? (
-                  <div className="card-connector">{currentQuery[2] === 's' ? 'suited' : 'offsuit'}</div>
+                  <div className={`suit-indicator ${currentQuery[2] === 's' ? 'suited' : 'offsuit'}`}>
+                    <div className="suit-icons">
+                      {currentQuery[2] === 's' ? (
+                        <>
+                          <span className="suit-symbol red">♥</span>
+                          <span className="suit-symbol black">♠</span>
+                          <span className="suit-symbol red">♦</span>
+                          <span className="suit-symbol black">♣</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="suit-symbol black">♠</span>
+                          <span className="suit-symbol red">♥</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="suit-label">
+                      {currentQuery[2] === 's' ? 'SUITED' : 'OFFSUIT'}
+                    </div>
+                    <div className="hand-notation">
+                      {currentQuery.length >= 4 ? `${currentQuery[1]}${currentQuery[2]}${currentQuery[3]}` : ''}
+                    </div>
+                  </div>
                 ) : (
                   <div 
                     className={`selected-card ${['A', 'K', 'Q', 'J', 'T'].includes(currentQuery[2]) ? 'red-card' : 'black-card'}`}
@@ -345,29 +368,52 @@ function VirtualKeyboard({ onButtonClick, currentQuery, darkMode, settings }) {
             <div className="group-label">Second Card</div>
             <div className="buttons card-buttons">
               {cardRanks.map(card => {
-                const strength = getHandStrength(card.key);
-                const winProbability = calculateWinProbability(card.key);
-                
+                // Don't show strategy indicators until suited/offsuit is selected
                 return (
                   <button 
                     key={card.key} 
-                    className={`keyboard-button card-button ${strength ? strength + '-card' : ''}`}
-                    onClick={() => onButtonClick(currentQuery + card.key)}
-                    style={getButtonStyle(card.key)}
+                    className="keyboard-button card-button"
+                    onClick={() => {
+                      const newQuery = currentQuery + card.key;
+                      // If it's a pair, complete the query immediately
+                      if (currentQuery[1] === card.key) {
+                        onButtonClick(newQuery);
+                      } else {
+                        // For non-pairs, just add the card and show suited/offsuit choice
+                        onButtonClick(newQuery, true);
+                      }
+                    }}
                     data-card={card.key}
                   >
                     <span className="card-center">{card.display}</span>
-                    {getIndicatorLabel(card.key)}
-                    {showSecondCard && winProbability && (
-                      <div className="win-probability" style={{ 
-                        backgroundColor: getProbabilityBackground(winProbability)
-                      }}>
-                        {Math.round(winProbability)}%
-                      </div>
-                    )}
                   </button>
                 );
               })}
+            </div>
+          </div>
+        )}
+        
+        {/* Suited/Offsuit choice */}
+        {showSuitedChoice && (
+          <div className="button-group">
+            <div className="group-label">Are the cards suited?</div>
+            <div className="buttons suited-buttons">
+              <button 
+                className="keyboard-button suited-button suited"
+                onClick={() => onButtonClick(currentQuery + 's')}
+              >
+                <span className="suited-icon">♠♥♦♣</span>
+                <span className="suited-label">Suited</span>
+                <span className="suited-example">{currentQuery[1]}{currentQuery[2]}s</span>
+              </button>
+              <button 
+                className="keyboard-button suited-button offsuit"
+                onClick={() => onButtonClick(currentQuery + 'o')}
+              >
+                <span className="offsuit-icon">♠♥</span>
+                <span className="offsuit-label">Offsuit</span>
+                <span className="offsuit-example">{currentQuery[1]}{currentQuery[2]}o</span>
+              </button>
             </div>
           </div>
         )}
