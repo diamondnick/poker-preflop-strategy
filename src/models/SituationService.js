@@ -3,6 +3,12 @@ import { cardArray } from '../data/cardData';
 
 export class SituationService {
   getSituationByQuery(query, limit, settings = { tableSize: 9, stackSize: 'medium' }) {
+    // Validate query first
+    const sq = new SituationQuery(query);
+    if (!sq.isValid) {
+      console.warn(`Invalid query: ${sq.errorMessage}`);
+      return [];
+    }
     return this.filterSituations(this.getAllSituations(), query, limit, settings);
   }
 
@@ -10,19 +16,28 @@ export class SituationService {
     let out = [];
     if (query) {
       const sq = new SituationQuery(query);
-      situations.forEach(sit => {
-        if (sit.isMatch(sq)) {
-          // Adjust the situation based on table size
-          this.adjustSituationForTableSize(sit, settings.tableSize);
-          
-          // Adjust the situation based on stack size
-          if (settings.stackSize) {
-            this.adjustSituationForStackSize(sit, settings.stackSize);
+      
+      // Only proceed if query is valid
+      if (sq.isValid) {
+        situations.forEach(sit => {
+          if (sit.isMatch(sq)) {
+            // Create a copy of the situation to avoid modifying the original
+            const adjustedSit = this.copySituation(sit);
+            
+            // Adjust the situation based on table size
+            this.adjustSituationForTableSize(adjustedSit, settings.tableSize);
+            
+            // Adjust the situation based on stack size
+            if (settings.stackSize) {
+              this.adjustSituationForStackSize(adjustedSit, settings.stackSize);
+            }
+            
+            out.push(adjustedSit);
           }
-          
-          out.push(sit);
-        }
-      });
+        });
+      } else {
+        console.warn(`Invalid query in filterSituations: ${sq.errorMessage}`);
+      }
     }
 
     if (limit && out.length > limit) {
@@ -86,8 +101,14 @@ export class SituationService {
     if (situation.unraisedPot === 'F' && significant) {
       situation.unraisedPot = 'C';
     } else if (situation.unraisedPot === 'F') {
-      // Only upgrade some fold hands
-      if (Math.random() > 0.5) {
+      // Deterministic upgrade based on card values
+      const cardRanks = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14};
+      const rank1 = cardRanks[situation.card1] || 0;
+      const rank2 = cardRanks[situation.card2] || 0;
+      const sum = rank1 + rank2;
+      
+      // Upgrade if sum of card ranks is above threshold or cards are suited
+      if (sum > 20 || (situation.isSuited && sum > 16)) {
         situation.unraisedPot = 'C';
       }
     }
@@ -101,26 +122,45 @@ export class SituationService {
   tightenAdvice(situation, significant = false) {
     // Downgrade some call hands to fold
     if (situation.unraisedPot === 'C') {
-      if (significant || Math.random() > 0.7) {
+      const cardRanks = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14};
+      const rank1 = cardRanks[situation.card1] || 0;
+      const rank2 = cardRanks[situation.card2] || 0;
+      const sum = rank1 + rank2;
+      
+      // Downgrade if sum of card ranks is below threshold and not suited
+      if (significant || (sum < 18 && !situation.isSuited)) {
         situation.unraisedPot = 'F';
       }
     }
     
     // Also tighten raised pot advice
-    if (situation.raisedPot === 'C' && (significant || Math.random() > 0.5)) {
-      situation.raisedPot = 'F';
+    if (situation.raisedPot === 'C') {
+      const cardRanks = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14};
+      const rank1 = cardRanks[situation.card1] || 0;
+      const rank2 = cardRanks[situation.card2] || 0;
+      const sum = rank1 + rank2;
+      
+      if (significant || (sum < 22 && !situation.isSuited)) {
+        situation.raisedPot = 'F';
+      }
     }
   }
   
   adjustForShortStack(situation) {
     // With short stacks, we want to be more willing to get all-in with decent hands
-    // Upgrade some call hands to raises
-    if (situation.unraisedPot === 'C' && Math.random() > 0.5) {
+    const cardRanks = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14};
+    const rank1 = cardRanks[situation.card1] || 0;
+    const rank2 = cardRanks[situation.card2] || 0;
+    const sum = rank1 + rank2;
+    const isPair = situation.card1 === situation.card2;
+    
+    // Upgrade some call hands to raises - more aggressive with strong hands
+    if (situation.unraisedPot === 'C' && (sum > 20 || isPair || (situation.isSuited && sum > 18))) {
       situation.unraisedPot = 'R';
     }
     
-    // But we want to be less willing to call raises
-    if (situation.raisedPot === 'C' && Math.random() > 0.3) {
+    // But we want to be less willing to call raises with marginal hands
+    if (situation.raisedPot === 'C' && sum < 24 && !isPair && !(situation.isSuited && sum > 22)) {
       situation.raisedPot = 'F';
     }
   }
@@ -156,6 +196,17 @@ export class SituationService {
     });
   }
 
+  // Helper method to create a copy of a situation
+  copySituation(situation) {
+    const copy = new Situation(
+      situation.face,
+      situation.unraisedPot,
+      situation.raisedPot,
+      situation.position
+    );
+    return copy;
+  }
+  
   getAllSituations(cardArrayData) {
     if (!cardArrayData) {
       cardArrayData = cardArray;
@@ -170,7 +221,7 @@ export class SituationService {
       situations = situations.concat(this.getSituationByPosition('B', cardArrayData, 9));
       return situations;
     } catch (e) {
-      console.error(e);
+      console.error('Error loading poker situations:', e);
       return [];
     }
   }

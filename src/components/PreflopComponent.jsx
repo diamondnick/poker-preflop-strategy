@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { SituationService } from '../models/SituationService';
 import VirtualKeyboard from './VirtualKeyboard';
 import SettingsComponent from './SettingsComponent';
 import { getWinProbability } from '../data/oddsData';
+import './LoadingAndError.css';
 
 const cardService = new SituationService();
 
@@ -11,6 +12,8 @@ function PreflopComponent({ darkMode }) {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [tableMode, setTableMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -29,34 +32,52 @@ function PreflopComponent({ darkMode }) {
 
   useEffect(() => {
     // Get all situations on component mount
-    const allSituations = cardService.getAllSituations();
-    setItems(allSituations);
+    try {
+      setIsLoading(true);
+      const allSituations = cardService.getAllSituations();
+      setItems(allSituations);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading situations:', err);
+      setError('Failed to load poker data. Please refresh the page.');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
+  // Memoize the query completeness check
+  const isQueryComplete = useMemo(() => {
+    if (!query) return false;
+    
+    return query.length >= 3 && (
+      // Pocket pair (same cards)
+      (query.length === 3 && query[1] === query[2]) ||
+      // Non-pair with suited/offsuit indicator
+      (query.length === 4 && (query[3] === 's' || query[3] === 'o'))
+    );
+  }, [query]);
+  
+  // Memoize filtered items to prevent unnecessary recalculations
   useEffect(() => {
     // Filter situations when query changes - only show results when query is complete
-    if (query) {
-      // Check if query is complete:
-      // - Position (1 char) + Card1 (1 char) + Card2 (1 char) = 3 chars for pairs
-      // - Position (1 char) + Card1 (1 char) + Card2 (1 char) + Suited/Offsuit (1 char) = 4 chars for non-pairs
-      const isComplete = query.length >= 3 && (
-        // Pocket pair (same cards)
-        (query.length === 3 && query[1] === query[2]) ||
-        // Non-pair with suited/offsuit indicator
-        (query.length === 4 && (query[3] === 's' || query[3] === 'o'))
-      );
-      
-      if (isComplete) {
+    if (query && isQueryComplete) {
+      try {
+        setIsLoading(true);
         const filtered = cardService.getSituationByQuery(query, 10, settings);
         setFilteredItems(filtered);
         setCurrentItemIndex(0); // Reset to first item when query changes
-      } else {
-        setFilteredItems([]); // Don't show results until query is complete
+        setError(null);
+      } catch (err) {
+        console.error('Error filtering situations:', err);
+        setError('Failed to process your selection. Please try again.');
+        setFilteredItems([]);
+      } finally {
+        setIsLoading(false);
       }
     } else {
-      setFilteredItems([]);
+      setFilteredItems([]); // Don't show results until query is complete
     }
-  }, [query, settings]);
+  }, [query, settings, isQueryComplete]);
 
   useEffect(() => {
     // Auto-enable table mode on mobile
@@ -66,21 +87,24 @@ function PreflopComponent({ darkMode }) {
     }
   }, []);
 
-  const handleKeyboardInput = (newQuery, replace = false) => {
+  const handleKeyboardInput = useCallback((newQuery, replace = false) => {
     if (replace) {
       setQuery(newQuery);
     } else {
-      // Only allow up to 3 characters
-      if (query.length < 3) {
+      // Only allow up to 4 characters (position + card1 + card2 + suited/offsuit)
+      if (query.length < 4) {
         setQuery(newQuery);
       }
     }
+    
+    // Clear any previous errors when user is entering new input
+    setError(null);
     
     // Vibration feedback if supported
     if (navigator.vibrate) {
       navigator.vibrate(10); // 10ms subtle vibration
     }
-  };
+  }, [query]);
 
   // Function to get the correct image path
   const getCardImagePath = (card, suit) => {
@@ -256,12 +280,22 @@ function PreflopComponent({ darkMode }) {
         />
       )}
       
-      <VirtualKeyboard 
-        onButtonClick={handleKeyboardInput} 
-        currentQuery={query} 
-        darkMode={darkMode}
-        settings={settings}
-      />
+      <div className="preflop-container">
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+          </div>
+        )}
+        {isLoading && (
+          <div className="loading-indicator">
+            <div className="spinner"></div>
+            <p>Loading...</p>
+          </div>
+        )}
+        <div className="keyboard-container">
+          <VirtualKeyboard onButtonClick={handleKeyboardInput} currentQuery={query} darkMode={darkMode} settings={settings} />
+        </div>
+      </div>
 
       <div 
         className="situations-container"
@@ -274,16 +308,6 @@ function PreflopComponent({ darkMode }) {
           filteredItems.length > 0 ? (
             <>
               <div className="situation-row">
-                <div className="situation-header">
-                  <div className="hand-info">
-                    <span className="position-label">{filteredItems[currentItemIndex].positionDisplay}</span>
-                    <span className="card-display">
-                      {filteredItems[currentItemIndex].card1}
-                      {filteredItems[currentItemIndex].card2}
-                      {filteredItems[currentItemIndex].isSuited ? 's' : 'o'}
-                    </span>
-                  </div>
-                </div>
                 
                 <div className="advice-column">
                   <div className="advice">
@@ -382,17 +406,6 @@ function PreflopComponent({ darkMode }) {
           // Normal mode - show list of items
           filteredItems.length > 0 ? filteredItems.slice(0, 20).map((item, index) => (
             <div key={index} className="row situation-row">
-              <div className="situation-header">
-                <div className="hand-info">
-                  <span className="position-label">{item.positionDisplay}</span>
-                  <span className="card-display">
-                    {item.card1}
-                    {item.card2}
-                    {item.isSuited ? 's' : 'o'}
-                  </span>
-                </div>
-              </div>
-              
               <div className="advice-column">
                 <div className="advice">
                   <div className="advice-section">
