@@ -1100,7 +1100,7 @@ body {
   .page {
     margin: 0;
     padding: 10px;
-    padding-top: 110px; /* Add space for fixed header and selected cards */
+    padding-top: 180px; /* Further increased space for fixed header and selected cards */
     box-shadow: none;
     width: 100%;
   }
@@ -1124,6 +1124,7 @@ body {
   /* Optimize for poker players using cell phones */
   .virtual-keyboard {
     margin-top: 5px;
+    padding-top: 80px;
   }
   
   .current-query {
@@ -1135,6 +1136,11 @@ body {
     z-index: 900;
     width: 100%;
     padding: 10px;
+    height: auto;
+    max-height: 80px;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   /* Make the situation display more compact */
