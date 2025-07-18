@@ -1145,18 +1145,22 @@ body {
   
   /* Make the situation display more compact */
   .situation-row {
-    padding: 10px 5px;
-    margin-bottom: 10px;
+    padding: 8px 4px;
+    margin-bottom: 8px;
+    border-radius: 6px;
   }
   
   .advice {
-    font-size: 1.1rem;
-    padding: 5px 2px;
+    font-size: 1rem;
+    padding: 2px 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .advice p {
-    margin-bottom: 8px;
-    font-size: 1rem;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
   }
   
   /* Adjust action styling for mobile */
@@ -1854,9 +1858,9 @@ body {
   }
   
   .advice-action {
-    font-size: 1.2rem;
-    padding: 14px 20px;
-    min-height: 55px;
+    font-size: 1.1rem;
+    padding: 10px 15px;
+    min-height: 45px;
   }
 }
 
@@ -1887,12 +1891,13 @@ body {
   }
   
   .advice-section {
-    padding: 14px;
+    padding: 10px;
+    margin-bottom: 6px;
   }
   
   .advice-label {
-    font-size: 0.85rem;
-    margin-bottom: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
   }
   
   .advice-action {
