@@ -189,6 +189,18 @@ function PreflopComponent({ darkMode }) {
 
   // Function to calculate and display win probability
   const displayWinProbability = (card1, card2, isSuited, position, isRaisedPot = false) => {
+    // Don't show probabilities if suited/offsuit hasn't been selected yet for non-pairs
+    // For non-pairs, isSuited must be explicitly true or false (not undefined or null)
+    if (card1 !== card2 && isSuited !== true && isSuited !== false) {
+      return (
+        <div className="win-probability-container">
+          <div className="probability-label">
+            Select suited/offsuit to see win probability
+          </div>
+        </div>
+      );
+    }
+    
     const hand = formatHandForProbability(card1, card2, isSuited);
     // Base probability from the hand
     let probability = getWinProbability(hand, position, settings.tableSize);
