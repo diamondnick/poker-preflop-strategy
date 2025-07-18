@@ -83,11 +83,9 @@ export const getWinProbability = (hand, position, tableSize = 9) => {
   // Apply position adjustment
   const posAdj = positionAdjustments[position] || 0;
   
-  // Apply table size adjustment
-  const tableSizeAdj = tableSizeAdjustments[tableSize] || 0;
-  
   // Calculate final probability (capped between 0 and 100)
-  let finalProb = baseProb + posAdj + tableSizeAdj;
+  // Table size adjustment removed
+  let finalProb = baseProb + posAdj;
   
   return Math.min(Math.max(finalProb, 0), 100);
 };

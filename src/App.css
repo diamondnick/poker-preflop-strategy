@@ -96,7 +96,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
+  padding: 6px 12px;
   background-color: var(--primary-dark);
   color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -106,24 +106,24 @@ body {
 }
 
 .app-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 .header-controls {
   display: flex;
-  gap: 10px;
+  gap: 6px;
 }
 
 .mode-toggle, 
 .settings-button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   color: white;
-  padding: 5px;
+  padding: 3px;
   border-radius: 4px;
   transition: background-color 0.2s;
 }
@@ -138,7 +138,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
+  padding: 6px 12px;
   background-color: var(--primary-dark);
   color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -148,24 +148,24 @@ body {
 }
 
 .app-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 .header-controls {
   display: flex;
-  gap: 10px;
+  gap: 6px;
 }
 
 .mode-toggle, 
 .settings-button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   color: white;
-  padding: 5px;
+  padding: 3px;
   border-radius: 4px;
   transition: background-color 0.2s;
 }
@@ -176,58 +176,45 @@ body {
 }
 
 /* Footer info styling */
-.footer-info {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 15px;
-  background-color: #f8f9fa;
-  border-top: 1px solid #eee;
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 15px;
-}
-
-.table-size-indicator,
-.stack-size-indicator {
-  padding: 5px 10px;
-  background-color: white;
-  border-radius: 4px;
-  border: 1px solid #eee;
-}
+/* Table size indicator and footer info removed */
 
 /* Mobile optimizations - THUMB-FRIENDLY HEADER */
 @media (max-width: 576px) {
   .minimal-header {
-    padding: 12px 16px;
-    /* Make header slightly taller for easier thumb reach */
-    min-height: 60px;
+    padding: 6px 12px;
+    /* Compact header for more content space */
+    min-height: 30px;
     display: flex;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 6px 6px 0 0;
   }
   
   .app-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
     flex: 1;
   }
   
-  /* Larger, more thumb-friendly header controls */
+  /* Compact header controls */
   .header-controls {
-    gap: 15px;
+    gap: 8px;
   }
   
   .mode-toggle,
   .settings-button {
-    font-size: 1.6rem;
-    padding: 12px 16px;
-    border-radius: 12px;
-    min-width: 55px;
-    min-height: 55px;
+    font-size: 1.1rem;
+    padding: 6px 8px;
+    border-radius: 6px;
+    min-width: 28px;
+    min-height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.25);
     transition: all 0.2s ease;
-    /* EXTRA LARGE for pressure accuracy */
+    /* Compact but still thumb-friendly */
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   }
   
@@ -259,6 +246,8 @@ body {
   background-color: var(--bg);
   border-radius: 10px;
   box-shadow: 0 2px 10px var(--shadow);
+  position: relative; /* Add this to establish a positioning context */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .sub-head {
@@ -275,7 +264,7 @@ body {
 }
 
 .search-container input {
-  padding: 12px 15px;
+  padding: 6px 12px;
   font-size: 1.2rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -482,13 +471,18 @@ body {
   text-align: center;
   margin-bottom: 15px;
   padding: 10px;
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: sticky;
+  top: 60px;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
 }
 
 .button-groups {
@@ -680,8 +674,8 @@ body {
 .control-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
-  padding: 10px;
+  margin-top: 8px;
+  padding: 5px;
   background-color: var(--card-bg);
   border-radius: 8px;
   box-shadow: 0 2px 5px var(--shadow);
@@ -689,9 +683,9 @@ body {
 
 .control-button {
   flex: 1;
-  margin: 0 5px;
-  padding: 12px 15px;
-  font-size: 1rem;
+  margin: 0 3px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
   border: none;
   border-radius: 6px;
   background-color: var(--button-bg);
@@ -725,25 +719,25 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 12px 16px;
+    background-color: rgba(30, 35, 41, 0.95);
+    padding: 6px 12px;
     z-index: 100;
     box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.15);
     margin: 0;
-    border-top: 2px solid #e0e0e0;
+    border-top: 1px solid var(--border);
     backdrop-filter: blur(10px);
   }
   
   .control-button {
-    padding: 22px 24px;
-    font-size: 1.5rem;
-    min-height: 80px;
-    border-radius: 15px;
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin: 0 8px;
-    /* Extra large touch target for pressure situations */
-    min-width: 120px;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    min-height: 40px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin: 0 4px;
+    /* Compact but still thumb-friendly */
+    min-width: 80px;
   }
   
   /* Add more padding to account for larger fixed buttons and footer */
@@ -793,14 +787,14 @@ body {
   /* Move current query to top for better visibility */
   .current-query {
     position: sticky;
-    top: 0;
+    top: 30px; /* Adjusted to account for smaller header on mobile */
     z-index: 50;
-    background-color: rgba(248, 248, 248, 0.95);
+    background-color: var(--card-bg);
     backdrop-filter: blur(8px);
     margin-bottom: 15px;
-    padding: 15px;
+    padding: 12px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     font-size: 1.4rem;
   }
 }
@@ -1106,6 +1100,7 @@ body {
   .page {
     margin: 0;
     padding: 10px;
+    padding-top: 110px; /* Add space for fixed header and selected cards */
     box-shadow: none;
     width: 100%;
   }
@@ -1114,6 +1109,12 @@ body {
     border-radius: 6px;
     padding: 8px 12px;
     margin-bottom: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
   }
   
   .app-title {
@@ -1127,6 +1128,13 @@ body {
   
   .current-query {
     margin-bottom: 8px;
+    position: fixed;
+    top: 50px; /* Position below the fixed header */
+    left: 0;
+    right: 0;
+    z-index: 900;
+    width: 100%;
+    padding: 10px;
   }
   
   /* Make the situation display more compact */
@@ -1309,8 +1317,10 @@ body {
   }
   
   .dark-mode .current-query {
-    background-color: rgba(40, 40, 40, 0.9);
-    color: #e0e0e0;
+    background-color: var(--dark-card-bg);
+    color: var(--dark-text);
+    border-color: var(--dark-border);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
   
   .dark-mode .control-button {
@@ -2210,7 +2220,7 @@ body {
   }
   
   .settings-header {
-    padding: 12px 15px;
+    padding: 6px 12px;
   }
   
   .settings-content {
@@ -2218,7 +2228,7 @@ body {
   }
   
   .settings-footer {
-    padding: 12px 15px;
+    padding: 6px 12px;
   }
 }
 

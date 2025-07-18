@@ -17,9 +17,7 @@ function PreflopComponent({ darkMode }) {
 
   const [tableMode, setTableMode] = useState(false);
   const [showDataSources, setShowDataSources] = useState(false);
-  const [settings] = useState({
-    tableSize: 9
-  });
+  const [settings] = useState({});
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   
@@ -421,11 +419,7 @@ function PreflopComponent({ darkMode }) {
         )}
       </div>
       
-      <div className="footer-info">
-        <div className="table-size-indicator">
-          Table Size: {settings.tableSize} players
-        </div>
-      </div>
+      {/* Table size indicator removed */}
     </div>
   );
 }
