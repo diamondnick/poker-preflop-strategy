@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { SituationService } from '../models/SituationService';
 import VirtualKeyboard from './VirtualKeyboard';
-import SettingsComponent from './SettingsComponent';
+import DataSourcesComponent from './DataSourcesComponent';
 import { getWinProbability } from '../data/oddsData';
 import './LoadingAndError.css';
 
@@ -16,13 +16,9 @@ function PreflopComponent({ darkMode }) {
   const [error, setError] = useState(null);
 
   const [tableMode, setTableMode] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [settings, setSettings] = useState(() => {
-    // Load settings from localStorage or use defaults
-    const savedSettings = localStorage.getItem('pokerEdgeSettings');
-    return savedSettings ? JSON.parse(savedSettings) : {
-      tableSize: 9
-    };
+  const [showDataSources, setShowDataSources] = useState(false);
+  const [settings] = useState({
+    tableSize: 9
   });
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -111,15 +107,7 @@ function PreflopComponent({ darkMode }) {
     return `/images/svg-cards/${card}_of_${suit}.svg`;
   };
 
-  // Toggle between normal and table mode
-  const toggleTableMode = () => {
-    setTableMode(!tableMode);
-    
-    // Vibration feedback if supported
-    if (navigator.vibrate) {
-      navigator.vibrate(15); // slightly longer vibration for mode change
-    }
-  };
+
 
   // Handle touch start
   const handleTouchStart = (e) => {
@@ -253,30 +241,19 @@ function PreflopComponent({ darkMode }) {
         <span className="app-title">♠️ PokerEdge</span>
         <div className="header-controls">
           <button 
-            className="mode-toggle" 
-            onClick={toggleTableMode}
-            aria-label={tableMode ? 'Switch to normal mode' : 'Switch to table mode'}
-          >
-            {tableMode ? '📱' : '🎮'}
-          </button>
-          <button 
             className="settings-button" 
-            onClick={() => setShowSettings(true)}
-            aria-label="Settings"
+            onClick={() => setShowDataSources(true)}
+            aria-label="Data Sources"
           >
-            ⚙️
+            📊
           </button>
         </div>
       </div>
       
-      {showSettings && (
-        <SettingsComponent 
-          onClose={() => setShowSettings(false)}
-          onSave={(newSettings) => {
-            setSettings(newSettings);
-            setShowSettings(false);
-          }}
-          initialSettings={settings}
+      {showDataSources && (
+        <DataSourcesComponent 
+          onClose={() => setShowDataSources(false)}
+          darkMode={darkMode}
         />
       )}
       
