@@ -5,7 +5,7 @@ import PreflopComponent from './components/PreflopComponent';
 import { Helmet } from 'react-helmet';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode] = useState(true); // Always dark mode for discretion
   
   // Set viewport meta tag to prevent scaling and horizontal scrolling
   useEffect(() => {
@@ -23,70 +23,36 @@ function App() {
     viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
   }, []);
   
-  // Check for user preference for dark mode
+
+  
+  // Apply dark mode class to body (always dark mode)
   useEffect(() => {
-    // Check if user has previously set a preference
-    const savedDarkMode = localStorage.getItem('darkMode');
-    
-    if (savedDarkMode) {
-      setDarkMode(savedDarkMode === 'true');
-    } else {
-      // Check if user's system prefers dark mode
-      const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDarkMode);
-    }
+    document.body.classList.add('dark-mode');
   }, []);
   
-  // Apply dark mode class to body
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-    
-    // Save preference to localStorage
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, [darkMode]);
-  
-  // Set CSS variables for light/dark mode
+  // Set CSS variables for sophisticated dark mode
   useEffect(() => {
     const root = document.documentElement;
     
-    if (darkMode) {
-      root.style.setProperty('--bg', '#121212');
-      root.style.setProperty('--text', '#f5f5f5');
-      root.style.setProperty('--header', '#1e1e1e');
-      root.style.setProperty('--card-bg', '#1e1e1e');
-      root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.4)');
-      root.style.setProperty('--button-bg', '#333');
-      root.style.setProperty('--button-text', '#fff');
-      root.style.setProperty('--button-hover', '#444');
-      root.style.setProperty('--clear-button', '#c0392b');
-      root.style.setProperty('--back-button', '#2980b9');
-    } else {
-      root.style.setProperty('--bg', '#f5f5f5');
-      root.style.setProperty('--text', '#333');
-      root.style.setProperty('--header', '#4169E1');
-      root.style.setProperty('--card-bg', '#fff');
-      root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.1)');
-      root.style.setProperty('--button-bg', '#f0f0f0');
-      root.style.setProperty('--button-text', '#333');
-      root.style.setProperty('--button-hover', '#e0e0e0');
-      root.style.setProperty('--clear-button', '#e74c3c');
-      root.style.setProperty('--back-button', '#3498db');
-    }
-  }, [darkMode]);
+    // Sophisticated dark color palette
+    root.style.setProperty('--bg', '#0f1419'); // Deep navy-black
+    root.style.setProperty('--text', '#e6e6e6'); // Soft white
+    root.style.setProperty('--header', '#1a1f2e'); // Dark slate blue
+    root.style.setProperty('--card-bg', '#1e2329'); // Charcoal with blue tint
+    root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.6)');
+    root.style.setProperty('--button-bg', '#2a3441'); // Muted blue-gray
+    root.style.setProperty('--button-text', '#e6e6e6');
+    root.style.setProperty('--button-hover', '#3a4551'); // Lighter blue-gray
+    root.style.setProperty('--clear-button', '#d63384'); // Elegant pink-red
+    root.style.setProperty('--back-button', '#0d6efd'); // Modern blue
+    root.style.setProperty('--primary-dark', '#1a1f2e'); // Primary dark color
+    root.style.setProperty('--accent', '#6c757d'); // Muted gray accent
+    root.style.setProperty('--success', '#198754'); // Success green
+    root.style.setProperty('--warning', '#fd7e14'); // Warning orange
+    root.style.setProperty('--border', '#3a4551'); // Border color
+  }, []);
   
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    
-    // Provide haptic feedback if available
-    if (navigator.vibrate) {
-      navigator.vibrate(10);
-    }
-  };
+
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
